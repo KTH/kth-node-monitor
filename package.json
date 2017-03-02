@@ -1,7 +1,7 @@
 {
   "//": "JSHint configuration - http://jshint.com/docs/options/",
   "name": "kth-node-monitor",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Helper utilities for KTH/node-projects",
   "main": "lib/index.js",
   "author": {
@@ -21,7 +21,7 @@
   "peerDependencies": {
     "component-registry": "^0.2.0",
     "safe-utils": "^0.1.0",
-    "bluebird": "^3.4.6" 
+    "bluebird": "^3.4.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
