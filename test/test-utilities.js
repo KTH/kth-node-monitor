@@ -3,6 +3,7 @@
 
 // Testing libraries
 const expect = require('chai').expect
+const { hostname } = require('os')
 
 // My code
 const Promise = require('bluebird')
@@ -41,4 +42,31 @@ describe('Utilities', function () {
         done()
       })
   })
+
+
+  it('contains local system status to be part of output', function (done) {
+    const systemHealthUtil = registry.getUtility(IHealthCheck, 'kth-node-system-check')
+    const localSystems = Promise.resolve({ statusCode: 503, message: 'Freedom' })
+
+    systemHealthUtil.status(localSystems)
+      .then((status) => {
+        const outp = systemHealthUtil.renderText(status)
+        expect(outp.indexOf('- local system: Freedom')).not.to.equal(-1)
+        done()
+      })
+  })
+
+  it('contains host name to be part of output', function (done) {
+    const systemHealthUtil = registry.getUtility(IHealthCheck, 'kth-node-system-check')
+    const localSystems = Promise.resolve({ statusCode: 200, message: 'Ok' })
+
+    systemHealthUtil.status(localSystems)
+      .then((status) => {
+        const outp = systemHealthUtil.renderText(status)
+        expect(outp.indexOf(`- host name: ${hostname()}`)).not.to.equal(-1)
+        done()
+      })
+  })
+
+  
 })
