@@ -5,14 +5,14 @@
   "description": "Helper utilities for KTH/node-projects",
   "main": "lib/index.js",
   "author": {
-    "name": "Sebastian Ware",
-    "email": "sebastian@urbantalk.se",
-    "url": "https://github.com/jhsware"
+    "name": "KTH",
+    "email": "infosys@kth.se",
+    "url": "https://github.com/KTH"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "uri": "https://github.com/jhsware/kth-node-monitor"
+    "uri": "https://github.com/KTH/kth-node-monitor"
   },
   "scripts": {
     "test": "NODE_ENV=development node_modules/mocha/bin/mocha ./test/test-*.js ./test/**/test-*.js",
@@ -24,13 +24,16 @@
     "bluebird": "^3.4.6"
   },
   "devDependencies": {
+    "bluebird": "^3.4.6",
     "chai": "^3.5.0",
-    "mocha": "^3.1.2",
     "component-registry": "^0.2.0",
-    "safe-utils": "^0.1.0",
-    "bluebird": "^3.4.6"
+    "mocha": "^6.2.0",
+    "safe-utils": "^0.1.0"
   },
   "jshintConfig": {
     "maxerr": 5
+  },
+  "dependencies": {
+    "kth-node-log": "^3.0.2"
   }
 }
