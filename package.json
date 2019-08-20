@@ -16,7 +16,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=development node_modules/mocha/bin/mocha ./test/test-*.js ./test/**/test-*.js",
-    "debug-test": "NODE_ENV=development node_modules/mocha/bin/mocha --debug-brk --no-timeouts ./test/test-*.js ./test/**/test-*.js"
+    "debug-test": "NODE_ENV=development node_modules/mocha/bin/mocha --debug-brk --no-timeouts ./test/test-*.js ./test/**/test-*.js",
+    "build": "npm test"
   },
   "peerDependencies": {
     "component-registry": "^0.2.0",
