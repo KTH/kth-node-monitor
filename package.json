@@ -1,7 +1,7 @@
 {
   "//": "JSHint configuration - http://jshint.com/docs/options/",
   "name": "kth-node-monitor",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Helper utilities for KTH/node-projects",
   "main": "lib/index.js",
   "author": {
@@ -17,7 +17,7 @@
   "scripts": {
     "test": "NODE_ENV=development node_modules/mocha/bin/mocha ./test/test-*.js ./test/**/test-*.js",
     "debug-test": "NODE_ENV=development node_modules/mocha/bin/mocha --debug-brk --no-timeouts ./test/test-*.js ./test/**/test-*.js",
-    "build": "npm install; npm test"
+    "build": "./build.sh"
   },
   "peerDependencies": {
     "component-registry": "^0.2.0",
