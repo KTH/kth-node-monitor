@@ -11,15 +11,19 @@ const registry = require("component-registry").globalRegistry;
 require("../lib");
 const { IHealthCheck } = require("../lib").interfaces;
 
+const utilities = require("../lib/utilities");
+
+const getUtilityNames = () => {
+  let values = [];
+  Object.keys(utilities.names).forEach(name => {
+    values.push(utilities.names[name]);
+  });
+  return values;
+};
+
 describe("Utilities", function() {
   it("can be found", function() {
-    [
-      "kth-node-api",
-      "kth-node-ldap",
-      "kth-node-mongodb",
-      "kth-node-redis",
-      "kth-node-system-check"
-    ].forEach(name => {
+    getUtilityNames().forEach(name => {
       const util = registry.getUtility(IHealthCheck, name);
       expect(util).not.to.equal(undefined);
     });
