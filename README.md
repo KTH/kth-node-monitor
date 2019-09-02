@@ -62,3 +62,38 @@ Starting service:
   Required goes up again
 - if required PENDING OK | PENDING
 - if required OK OK | OK
+
+```text
+
+  HTTP Response
+    ✓ Every status code should be readable, like '503 Service Unavailable'
+    ✓ 200 OK is defined.
+    ✓ 400 Bad Request is defined.
+    ✓ 404 Not Found is defined.
+    ✓ 501 Internal Server Error is defined.
+    ✓ 503 Service Unavailable is defined.
+    ✓ Test to see if a request status code is 200 OK.
+    ✓ Get the time passed since a timestame
+    ✓ Get a 501 Internal Server Error when a check is not configuration properly.
+    ✓ Get information if a service is required to work for the application to work.
+    ✓ Get a 503 Service Unavailable message when check faild, and the service is required.
+    ✓ Get a 503 Service Unavailable message when check faild, and the service is not required.
+
+  System Response
+    ✓ Get a 501 Internal Server Error when a check is not configuration properly.
+    ✓ Get a 200 Ok message when OK, and required.
+    ✓ Get a 200 Ok message when OK, and not required.
+    ✓ Get a 503 Service Unavailable message when check faild, and required.
+    ✓ Get a 503 Service Unavailable message when check faild, and not required.
+    ✓ Get information if a service is required to work for the application to work.
+
+  Utilities
+    ✓ All 7 types of checks can be found.
+
+  Utilities / Status check (kth-node-system-check).
+    ✓ The monitor response writes APPLICATION_STATUS: OK when local systems are working
+    ✓ The monitor response writes APPLICATION_STATUS: ERROR when one of the local systems are in faild state.
+    ✓ The monitor response contains the local systems status message.
+    ✓ The monitor response contains host name.
+
+```
