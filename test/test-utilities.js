@@ -12,6 +12,8 @@ require("../lib");
 const { IHealthCheck } = require("../lib").interfaces;
 
 const utilities = require("../lib/utilities");
+const httpResponse = require("../lib/httpResponse");
+const systemResponse = require("../lib/systemResponse");
 
 const getUtilityNames = () => {
   let values = [];
@@ -22,63 +24,73 @@ const getUtilityNames = () => {
 };
 
 describe("Utilities", function() {
-  it("can be found", function() {
+  it(`All ${
+    getUtilityNames().length
+  } types of checks can be found.`, function() {
     getUtilityNames().forEach(name => {
       const util = registry.getUtility(IHealthCheck, name);
       expect(util).not.to.equal(undefined);
     });
   });
+});
 
-  it("kth-node-system-check writes OK on first line when ok", function(done) {
-    const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
-    );
-    const localSystems = Promise.resolve({ statusCode: 200, message: "OK" });
-
-    systemHealthUtil.status(localSystems).then(status => {
-      const outp = systemHealthUtil.renderText(status);
-      expect(
-        outp.split("\n")[0].indexOf("APPLICATION_STATUS: OK")
-      ).not.to.equal(-1);
-      done();
-    });
-  });
-
-  it("kth-node-system-check writes ERRROR on first line when not ok", function(done) {
-    const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
-    );
-    const localSystems = Promise.resolve({ statusCode: 503, message: "ERROR" });
-
-    systemHealthUtil.status(localSystems).then(status => {
-      const outp = systemHealthUtil.renderText(status);
-      expect(
-        outp.split("\n")[0].indexOf("APPLICATION_STATUS: ERROR")
-      ).not.to.equal(-1);
-      done();
-    });
-  });
-
-  it("contains local system status to be part of output", function(done) {
+describe("Utilities / Status check (kth-node-system-check).", function() {
+  it("The monitor response writes APPLICATION_STATUS: OK when local systems are working", function(done) {
     const systemHealthUtil = registry.getUtility(
       IHealthCheck,
       "kth-node-system-check"
     );
     const localSystems = Promise.resolve({
-      statusCode: 503,
-      message: "Freedom"
+      statusCode: httpResponse.statusCodes.OK,
+      message: "OK"
     });
 
     systemHealthUtil.status(localSystems).then(status => {
-      const outp = systemHealthUtil.renderText(status);
-      expect(outp.indexOf("- local system: Freedom")).not.to.equal(-1);
+      const response = systemHealthUtil.renderText(status);
+      expect(
+        response.split("\n")[0].indexOf("APPLICATION_STATUS: OK")
+      ).not.to.equal(-1);
       done();
     });
   });
 
-  it("contains host name to be part of output", function(done) {
+  it("The monitor response writes APPLICATION_STATUS: ERROR when one of the local systems are in faild state.", function(done) {
+    const systemHealthUtil = registry.getUtility(
+      IHealthCheck,
+      "kth-node-system-check"
+    );
+    const localSystems = Promise.resolve({
+      statusCode: httpResponse.statusCodes.SERVICE_UNAVAILABLE,
+      message: "ERROR"
+    });
+
+    systemHealthUtil.status(localSystems).then(status => {
+      const response = systemHealthUtil.renderText(status);
+      expect(
+        response.split("\n")[0].indexOf("APPLICATION_STATUS: ERROR")
+      ).not.to.equal(-1);
+      done();
+    });
+  });
+
+  it("The monitor response contains the local systems status message.", function(done) {
+    const systemHealthUtil = registry.getUtility(
+      IHealthCheck,
+      "kth-node-system-check"
+    );
+    const localSystems = Promise.resolve({
+      statusCode: httpResponse.statusCodes.OK,
+      message: "A status message"
+    });
+
+    systemHealthUtil.status(localSystems).then(status => {
+      const response = systemHealthUtil.renderText(status);
+      expect(response).to.contain("A status message");
+      done();
+    });
+  });
+
+  it("The monitor response contains host name.", function(done) {
     const systemHealthUtil = registry.getUtility(
       IHealthCheck,
       "kth-node-system-check"
@@ -86,8 +98,8 @@ describe("Utilities", function() {
     const localSystems = Promise.resolve({ statusCode: 200, message: "Ok" });
 
     systemHealthUtil.status(localSystems).then(status => {
-      const outp = systemHealthUtil.renderText(status);
-      expect(outp.indexOf(`- host name: ${hostname()}`)).not.to.equal(-1);
+      const response = systemHealthUtil.renderText(status);
+      expect(response.indexOf(`- host name: ${hostname()}`)).not.to.equal(-1);
       done();
     });
   });
