@@ -1,7 +1,7 @@
 {
   "//": "JSHint configuration - http://jshint.com/docs/options/",
   "name": "kth-node-monitor",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Helper for monitor page checks.",
   "main": "lib/index.js",
   "author": {
@@ -21,7 +21,6 @@
   },
   "peerDependencies": {
     "component-registry": "^0.2.0",
-    "safe-utils": "^0.1.0",
     "bluebird": "^3.4.6"
   },
   "devDependencies": {
