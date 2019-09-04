@@ -1,7 +1,7 @@
 {
   "//": "JSHint configuration - http://jshint.com/docs/options/",
   "name": "kth-node-monitor",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Helper for monitor page checks.",
   "main": "lib/index.js",
   "author": {
@@ -33,7 +33,7 @@
     "maxerr": 5
   },
   "dependencies": {
-    "kth-node-log": "^3.0.2",
-    "@kth/in-memory-cache": "^0.1.0"
+    "@kth/in-memory-cache": "^0.1.1",
+    "kth-node-log": "^3.0.2"
   }
 }
