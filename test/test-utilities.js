@@ -99,7 +99,7 @@ describe("Utilities / Status check (kth-node-system-check).", function() {
 
     systemHealthUtil.status(localSystems).then(status => {
       const response = systemHealthUtil.renderText(status);
-      expect(response.indexOf(`- host name: ${hostname()}`)).not.to.equal(-1);
+      expect(response.indexOf(`Hostname: ${hostname()}`)).not.to.equal(-1);
       done();
     });
   });
