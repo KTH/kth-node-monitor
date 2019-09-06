@@ -94,7 +94,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable | Response time 123ms -  application can still function without this service."
+      "503 Service Unavailable | Response time 123ms - The application can still function without this service."
     );
   });
 
@@ -107,7 +107,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable | Response time 123ms -  application can still function without this service."
+      "502 Bad Gateway | Response time 123ms | Probably an networking issue"
     );
   });
 });
