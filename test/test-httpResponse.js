@@ -5,6 +5,7 @@
 const expect = require("chai").expect;
 const httpResponse = require("../lib/httpResponse");
 const utilities = require("../lib/utilities");
+const interfaces = require("../lib/interfaces");
 
 describe("HTTP Response", function() {
   it("Every status code should be readable, like '503 Service Unavailable'", function() {
@@ -48,7 +49,7 @@ describe("HTTP Response", function() {
 
   it("Get a 501 Internal Server Error when a check is not configuration properly.", function() {
     const responseObject = httpResponse.configurationError(
-      utilities.names.KTH_NODE_API,
+      interfaces.names.KTH_NODE_API,
       {
         required: true
       }
@@ -60,7 +61,7 @@ describe("HTTP Response", function() {
 
   it("Get information if a service is required to work for the application to work.", function() {
     const responseObject = httpResponse.failed(
-      utilities.names.KTH_NODE_API,
+      interfaces.names.KTH_NODE_API,
       {
         required: true
       },
@@ -73,7 +74,7 @@ describe("HTTP Response", function() {
 
   it("Get a 503 Service Unavailable message when check faild, and the service is required.", function() {
     const responseObject = httpResponse.failed(
-      utilities.names.KTH_NODE_API,
+      interfaces.names.KTH_NODE_API,
       {
         required: true
       },
@@ -86,7 +87,7 @@ describe("HTTP Response", function() {
 
   it("Get a 503 Service Unavailable message when check faild, and the service is not required.", function() {
     const responseObject = httpResponse.failed(
-      utilities.names.KTH_NODE_API,
+      interfaces.names.KTH_NODE_API,
       {
         required: false
       },

@@ -6,11 +6,12 @@ const expect = require("chai").expect;
 const systemResponse = require("../lib/systemResponse");
 const httpResponse = require("../lib/httpResponse");
 const utilities = require("../lib/utilities");
+const interfaces = require("../lib/interfaces");
 
 describe("System Response", function() {
   it("Get a 501 Internal Server Error when a check is not configuration properly.", function() {
     const responseObject = httpResponse.configurationError(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: true
       }
@@ -22,7 +23,7 @@ describe("System Response", function() {
 
   it("Get a 200 Ok message when OK, and required.", function() {
     const responseObject = systemResponse.works(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: true
       }
@@ -32,7 +33,7 @@ describe("System Response", function() {
 
   it("Get a 200 Ok message when OK, and not required.", function() {
     const responseObject = systemResponse.works(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: false
       }
@@ -42,7 +43,7 @@ describe("System Response", function() {
 
   it("Get a 503 Service Unavailable message when check faild, and required.", function() {
     const responseObject = systemResponse.failed(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: true
       }
@@ -54,7 +55,7 @@ describe("System Response", function() {
 
   it("Get a 503 Service Unavailable message when check faild, and not required.", function() {
     const responseObject = systemResponse.failed(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: false
       }
@@ -66,7 +67,7 @@ describe("System Response", function() {
 
   it("Get information if a service is required to work for the application to work.", function() {
     const responseObject = systemResponse.failed(
-      utilities.names.KTH_NODE_MONGODB,
+      interfaces.names.KTH_NODE_MONGODB,
       {
         required: true
       }

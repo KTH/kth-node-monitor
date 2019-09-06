@@ -9,7 +9,7 @@ const { hostname } = require("os");
 const Promise = require("bluebird");
 const registry = require("component-registry").globalRegistry;
 require("../lib");
-const { IHealthCheck } = require("../lib").interfaces;
+const interfaces = require("../lib/interfaces");
 
 const utilities = require("../lib/utilities");
 const httpResponse = require("../lib/httpResponse");
@@ -17,8 +17,8 @@ const systemResponse = require("../lib/systemResponse");
 
 const getUtilityNames = () => {
   let values = [];
-  Object.keys(utilities.names).forEach(name => {
-    values.push(utilities.names[name]);
+  Object.keys(interfaces.names).forEach(name => {
+    values.push(interfaces.names[name]);
   });
   return values;
 };
@@ -28,7 +28,7 @@ describe("Utilities", function() {
     getUtilityNames().length
   } types of checks can be found.`, function() {
     getUtilityNames().forEach(name => {
-      const util = registry.getUtility(IHealthCheck, name);
+      const util = registry.getUtility(interfaces.IHealthCheck, name);
       expect(util).not.to.equal(undefined);
     });
   });
@@ -37,8 +37,8 @@ describe("Utilities", function() {
 describe("Utilities / Status check (kth-node-system-check).", function() {
   it("The monitor response writes APPLICATION_STATUS: OK when local systems are working", function(done) {
     const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
+      interfaces.IHealthCheck,
+      interfaces.names.KTH_NODE_SYSTEM_CHECK
     );
     const localSystems = Promise.resolve({
       statusCode: httpResponse.statusCodes.OK,
@@ -56,8 +56,8 @@ describe("Utilities / Status check (kth-node-system-check).", function() {
 
   it("The monitor response writes APPLICATION_STATUS: ERROR when one of the local systems are in faild state.", function(done) {
     const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
+      interfaces.IHealthCheck,
+      interfaces.names.KTH_NODE_SYSTEM_CHECK
     );
     const localSystems = Promise.resolve({
       statusCode: httpResponse.statusCodes.SERVICE_UNAVAILABLE,
@@ -75,8 +75,8 @@ describe("Utilities / Status check (kth-node-system-check).", function() {
 
   it("The monitor response contains the local systems status message.", function(done) {
     const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
+      interfaces.IHealthCheck,
+      interfaces.names.KTH_NODE_SYSTEM_CHECK
     );
     const localSystems = Promise.resolve({
       statusCode: httpResponse.statusCodes.OK,
@@ -92,8 +92,8 @@ describe("Utilities / Status check (kth-node-system-check).", function() {
 
   it("The monitor response contains host name.", function(done) {
     const systemHealthUtil = registry.getUtility(
-      IHealthCheck,
-      "kth-node-system-check"
+      interfaces.IHealthCheck,
+      interfaces.names.KTH_NODE_SYSTEM_CHECK
     );
     const localSystems = Promise.resolve({ statusCode: 200, message: "Ok" });
 
