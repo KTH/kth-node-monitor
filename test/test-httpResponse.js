@@ -72,7 +72,7 @@ describe("HTTP Response", function() {
     );
   });
 
-  it("Get a 503 Service Unavailable message when check faild, and the service is required.", function() {
+  it("Get a 'Unexpected response from service' message when check faild, and the service is required.", function() {
     const responseObject = httpResponse.failed(
       interfaces.names.KTH_NODE_API,
       {
@@ -81,11 +81,11 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable | Response time 123ms - This service has to work"
+      "Unexpected response from service | Response time 123ms | Required to work: true | This service has"
     );
   });
 
-  it("Get a 503 Service Unavailable message when check faild, and the service is not required.", function() {
+  it("Get a 'Unexpected response from service' message when check faild, and the service is not required.", function() {
     const responseObject = httpResponse.failed(
       interfaces.names.KTH_NODE_API,
       {
@@ -94,11 +94,11 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable | Response time 123ms - The application can still function without this service."
+      "Unexpected response from service | Response time 123ms | Required to work: false | The application can still"
     );
   });
 
-  it("Get a 502 Bad Gateway message when check gets an uneqpected error, and the service is not required.", function() {
+  it("Get a Unable to connect message when check gets an uneqpected error, and the service is not required.", function() {
     const responseObject = httpResponse.error(
       interfaces.names.KTH_NODE_API,
       {
@@ -107,7 +107,20 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "502 Bad Gateway | Response time 123ms | Probably an networking issue"
+      "Unable to connect | Response time 123ms | The service is probably down"
+    );
+  });
+
+  it("Get a Unable to connect message when check gets an uneqpected error, and the service is required.", function() {
+    const responseObject = httpResponse.error(
+      interfaces.names.KTH_NODE_API,
+      {
+        required: true
+      },
+      httpResponse.getRequestTimeMs(Date.now() - 123)
+    );
+    expect(responseObject.message).to.contain(
+      "Unable to connect | Response time 123ms | The service is probably down or it is a networking issue. This service has to work"
     );
   });
 });
