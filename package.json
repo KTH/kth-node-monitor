@@ -1,7 +1,7 @@
 {
   "//": "JSHint configuration - http://jshint.com/docs/options/",
   "name": "kth-node-monitor",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Helper for monitor page checks.",
   "main": "lib/index.js",
   "author": {
