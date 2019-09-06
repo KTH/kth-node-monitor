@@ -81,7 +81,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable after after 123ms - This service has to work "
+      "503 Service Unavailable | Response time 123ms - This service has to work"
     );
   });
 
@@ -94,7 +94,20 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable after after 123ms - The application can function without"
+      "503 Service Unavailable | Response time 123ms -  application can still function without this service."
+    );
+  });
+
+  it("Get a 502 Bad Gateway message when check gets an uneqpected error, and the service is not required.", function() {
+    const responseObject = httpResponse.error(
+      interfaces.names.KTH_NODE_API,
+      {
+        required: false
+      },
+      httpResponse.getRequestTimeMs(Date.now() - 123)
+    );
+    expect(responseObject.message).to.contain(
+      "503 Service Unavailable | Response time 123ms -  application can still function without this service."
     );
   });
 });
