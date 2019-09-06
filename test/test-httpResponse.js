@@ -81,7 +81,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Connected but got an unexpected response from service | Response time 123ms | Required to work: true | Has to work"
+      "Connected but got an unexpected response from service | Response time: 123ms | Has to work"
     );
   });
 
@@ -94,7 +94,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Connected but got an unexpected response from service | Response time 123ms | Required to work: false | The application can still function"
+      "Connected but got an unexpected response from service | Response time: 123ms | The application can still function"
     );
   });
 
@@ -120,7 +120,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Unable to connect to the service. The service is probably down or it is a networking issue | Response time 123ms | Has to work "
+      "Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 123ms | Has to work "
     );
   });
 
