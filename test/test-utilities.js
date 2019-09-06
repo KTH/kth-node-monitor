@@ -45,7 +45,7 @@ describe("Utilities / Status check (kth-node-system-check).", function() {
       message: "OK"
     });
 
-    systemHealthUtil.status(localSystems).then(status => {
+    systemHealthUtil.status(null).then(status => {
       const response = systemHealthUtil.renderText(status);
       expect(
         response.split("\n")[0].indexOf("APPLICATION_STATUS: OK")
