@@ -21,27 +21,27 @@ describe("System Response", function() {
     );
   });
 
-  it("Get a 200 Ok message when OK, and required.", function() {
+  it("Get a OK message when check worked, and required.", function() {
     const responseObject = systemResponse.works(
       interfaces.names.KTH_NODE_MONGODB,
       {
         required: true
       }
     );
-    expect(responseObject.message).to.contain("OK (Required to work: true)");
+    expect(responseObject.message).to.contain("OK | Required to work: true");
   });
 
-  it("Get a 200 Ok message when OK, and not required.", function() {
+  it("Get a OK message when check worked, and not required.", function() {
     const responseObject = systemResponse.works(
       interfaces.names.KTH_NODE_MONGODB,
       {
         required: false
       }
     );
-    expect(responseObject.message).to.contain("OK (Required to work: false)");
+    expect(responseObject.message).to.contain("OK | Required to work: false");
   });
 
-  it("Get a 503 Service Unavailable message when check faild, and required.", function() {
+  it("Get a 'The application can still function' message when check faild, and required.", function() {
     const responseObject = systemResponse.failed(
       interfaces.names.KTH_NODE_MONGODB,
       {
@@ -49,11 +49,11 @@ describe("System Response", function() {
       }
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable. This service has to work"
+      "Error | This service has to work"
     );
   });
 
-  it("Get a 503 Service Unavailable message when check faild, and not required.", function() {
+  it("Get a 'The application can still function' message when check faild, and not required.", function() {
     const responseObject = systemResponse.failed(
       interfaces.names.KTH_NODE_MONGODB,
       {
@@ -61,7 +61,7 @@ describe("System Response", function() {
       }
     );
     expect(responseObject.message).to.contain(
-      "503 Service Unavailable. The application can function without this service."
+      "Error | The application can still function"
     );
   });
 
