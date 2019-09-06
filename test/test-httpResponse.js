@@ -81,7 +81,7 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Unexpected response from service | Response time 123ms | Required to work: true | This service has"
+      "Connected but got an unexpected response from service | Response time 123ms | Required to work: true | Has to work"
     );
   });
 
@@ -94,11 +94,11 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Unexpected response from service | Response time 123ms | Required to work: false | The application can still"
+      "Connected but got an unexpected response from service | Response time 123ms | Required to work: false | The application can still function"
     );
   });
 
-  it("Get a Unable to connect message when check gets an uneqpected error, and the service is not required.", function() {
+  it("Get a 'Unable to connect' message when check gets an unexpected error, and the service is not required.", function() {
     const responseObject = httpResponse.error(
       interfaces.names.KTH_NODE_API,
       {
@@ -107,11 +107,11 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Unable to connect | Response time 123ms | The service is probably down"
+      "Unable to connect to the service"
     );
   });
 
-  it("Get a Unable to connect message when check gets an uneqpected error, and the service is required.", function() {
+  it("Get a 'Unable to connect' message when check gets an unexpected error, and the service is required.", function() {
     const responseObject = httpResponse.error(
       interfaces.names.KTH_NODE_API,
       {
@@ -120,7 +120,33 @@ describe("HTTP Response", function() {
       httpResponse.getRequestTimeMs(Date.now() - 123)
     );
     expect(responseObject.message).to.contain(
-      "Unable to connect | Response time 123ms | The service is probably down or it is a networking issue. This service has to work"
+      "Unable to connect to the service. The service is probably down or it is a networking issue | Response time 123ms | Has to work "
+    );
+  });
+
+  it("Get a 'Configuration error' message when unable to check status due to configuration error in the application, and the service is required.", function() {
+    const responseObject = httpResponse.configurationError(
+      interfaces.names.KTH_NODE_API,
+      {
+        required: true
+      },
+      httpResponse.getRequestTimeMs(Date.now() - 123)
+    );
+    expect(responseObject.message).to.contain(
+      "Configuration error | Has to work for the APPLICATION_STATUS to say OK"
+    );
+  });
+
+  it("Get a 'Configuration error' message when unable to check status due to configuration error in the application, and the service is not required.", function() {
+    const responseObject = httpResponse.configurationError(
+      interfaces.names.KTH_NODE_API,
+      {
+        required: false
+      },
+      httpResponse.getRequestTimeMs(Date.now() - 123)
+    );
+    expect(responseObject.message).to.contain(
+      "The application can still function without this service"
     );
   });
 });
