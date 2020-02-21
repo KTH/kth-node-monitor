@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "cross-env NODE_ENV=development jest",
+    "test:watch": "cross-env NODE_ENV=development jest --watchAll",
     "build": "./build.sh"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "bluebird": "^3.7.2"
   },
   "jest": {
-    "verbose": true
+    "verbose": true,
+    "collectCoverage": true
   }
 }
