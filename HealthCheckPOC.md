@@ -34,7 +34,19 @@ await systemMonitor.queryAllStatuses()
 res.send(systemMonitor.getStatusText())
 ```
 
-## Configuring the sub-systems
+## Currently supported sub-systems
+
+|  system   |                                                                                                                                    |
+| :-------: | ---------------------------------------------------------------------------------------------------------------------------------- |
+| ApiClient | `systemMonitor.includeRequiredApiClient({ client, key })` or<br/>`systemMonitor.includeOptionalApiClient({ client, key })`         |
+|    Api    | `systemMonitor.includeRequiredApi({ endpoint })` or<br/>`systemMonitor.includeOptionalApi({ endpoint })`                           |
+|   Ldap    | `systemMonitor.includeRequiredLdap({ ldap })` or<br/>`systemMonitor.includeOptionalLdap({ ldap })`                                 |
+|  MongoDb  | `systemMonitor.includeRequiredMongoDb({ db })` or<br/>`systemMonitor.includeOptionalMongoDb({ db })`                               |
+|   Redis   | `systemMonitor.includeRequiredRedis({ redis, redisOptions })` or<br/>`systemMonitor.includeOptionalRedis({ redis, redisOptions })` |
+|   SqlDb   | `systemMonitor.includeRequiredSqlDb({ db })` or<br/>`systemMonitor.includeOptionalSqlDb({ db })`                                   |
+|  Agenda   | `systemMonitor.includeRequiredAgenda({ agendaState })` or<br/>`systemMonitor.includeOptionalAgenda({ agendaState })`               |
+
+## Add / Change supported sub-system in `kth-node-monitor`
 
 The function `_listSupportedSystems()` is used to configure all sub-systems which shall be supported by the class.
 

@@ -27,6 +27,12 @@ Circular dependecies
   and if REQUIRED will cause unstaging by Netscaler. Then all deps will be unstaged.
   Services will need to be restarted in order to return OK and be staged by Netscaler
 
+## HealthCheck
+
+Now, there is a health check controller which works without depending on NPM package `component-registry`.
+
+Look at [HealthCheckPOC.md](./HealthCheckPOC.md) for more details.
+
 ### Development Notes
 
 If we have issues with recursive rependencies that resolve slowly we will need to implement one or both of the following:
