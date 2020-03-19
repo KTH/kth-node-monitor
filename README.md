@@ -31,7 +31,7 @@ Circular dependecies
 
 Now, there is a health check controller which works without depending on NPM package `component-registry`.
 
-Look at [HealthCheckPOC.md](./HealthCheckPOC.md) for more details.
+Look at [HealthCheckPOC.md](https://github.com/KTH/kth-node-monitor/blob/master/HealthCheckPOC.md) for more details.
 
 ### Development Notes
 
