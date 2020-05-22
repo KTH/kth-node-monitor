@@ -21,7 +21,6 @@ typings.json
 
 # Settings
 config/localSettings.js
-package-lock.json
 
 # Logs
 logs/*
