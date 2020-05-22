@@ -14,9 +14,10 @@ Object {
   },
   "text": "APPLICATION_STATUS: ERROR
 
-- local system checks: ERROR
+- Local system checks: ERROR
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -35,9 +36,10 @@ Object {
   },
   "text": "APPLICATION_STATUS: OK
 
-- local system checks: OK
+- Local system checks: OK
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -66,9 +68,10 @@ Object {
 
 - agenda: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -97,9 +100,10 @@ Object {
 
 - agenda: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -128,9 +132,10 @@ Object {
 
 - agenda: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -159,9 +164,10 @@ Object {
 
 - agenda: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -191,9 +197,10 @@ Object {
 
 - testApi: ERROR - Configuration error | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -219,9 +226,10 @@ Object {
 
 
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -251,9 +259,10 @@ Object {
 
 - testApi: ERROR - Configuration error | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -283,9 +292,10 @@ Object {
 
 - testApi: ERROR - Configuration error | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -315,9 +325,10 @@ Object {
 
 - testApi: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -347,9 +358,10 @@ Object {
 
 - testApi: OK | Response time: 79ms | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -376,9 +388,10 @@ Object {
 
 OK | Using previous cached response
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -408,9 +421,10 @@ Object {
 
 - testApi: ERROR - Configuration error | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -436,9 +450,10 @@ Object {
 
 
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -468,9 +483,10 @@ Object {
 
 - testApi: ERROR - Configuration error | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -500,9 +516,10 @@ Object {
 
 - testApi: ERROR - Configuration error | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -532,9 +549,10 @@ Object {
 
 - testApi: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -564,9 +582,10 @@ Object {
 
 - testApi: OK | Response time: 79ms | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -593,9 +612,10 @@ Object {
 
 OK | Using previous cached response
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -625,9 +645,10 @@ Object {
 
 - testApiClient: OK | Response time: 79ms | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -657,9 +678,10 @@ Object {
 
 - testApiClient: OK | Response time: 79ms | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -689,9 +711,10 @@ Object {
 
 - testApiClient: ERROR - Configuration error | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -721,9 +744,10 @@ Object {
 
 - testApiClient: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -753,9 +777,10 @@ Object {
 
 - testApiClient: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | The application can still function without this service. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -785,9 +810,10 @@ Object {
 
 - testApiClient: OK | Response time: 79ms | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -817,9 +843,10 @@ Object {
 
 - testApiClient: OK | Response time: 79ms | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -849,9 +876,10 @@ Object {
 
 - testApiClient: ERROR - Configuration error | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -881,9 +909,10 @@ Object {
 
 - testApiClient: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -913,9 +942,10 @@ Object {
 
 - testApiClient: ERROR - Unable to connect to the service. The service is probably down or it is a networking issue | Response time: 79ms | Has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -944,9 +974,10 @@ Object {
 
 - ldap: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -975,9 +1006,10 @@ Object {
 
 - ldap: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1006,9 +1038,10 @@ Object {
 
 - ldap: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1037,9 +1070,10 @@ Object {
 
 - ldap: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1068,9 +1102,10 @@ Object {
 
 - ldap: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1099,9 +1134,10 @@ Object {
 
 - ldap: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1130,9 +1166,10 @@ Object {
 
 - ldap: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1161,9 +1198,10 @@ Object {
 
 - ldap: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1192,9 +1230,10 @@ Object {
 
 - mongodb: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1223,9 +1262,10 @@ Object {
 
 - mongodb: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1254,9 +1294,10 @@ Object {
 
 - mongodb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1285,9 +1326,10 @@ Object {
 
 - mongodb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1316,9 +1358,10 @@ Object {
 
 - redis: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1347,9 +1390,10 @@ Object {
 
 - redis: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1378,9 +1422,10 @@ Object {
 
 - redis: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1409,9 +1454,10 @@ Object {
 
 - redis: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1440,9 +1486,10 @@ Object {
 
 - sqldb: OK | Required to work: false
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1471,9 +1518,10 @@ Object {
 
 - sqldb: Error | The application can still function without this service functioning properly. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1502,9 +1550,10 @@ Object {
 
 - sqldb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1533,9 +1582,10 @@ Object {
 
 - sqldb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1577,9 +1627,10 @@ Object {
 - redis: OK | Required to work: true
 - sqldb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1621,9 +1672,10 @@ Object {
 - redis: OK | Required to work: true
 - sqldb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1665,9 +1717,10 @@ Object {
 - redis: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 - sqldb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1709,9 +1762,10 @@ Object {
 - redis: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 - sqldb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1753,9 +1807,10 @@ Object {
 - redis: OK | Required to work: true
 - sqldb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1797,9 +1852,10 @@ Object {
 - redis: OK | Required to work: true
 - sqldb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1841,9 +1897,10 @@ Object {
 - redis: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 - sqldb: OK | Required to work: true
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
@@ -1885,9 +1942,10 @@ Object {
 - redis: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 - sqldb: Error | This service has to work for the APPLICATION_STATUS to say OK. | Ref: sfu8n1fu8n
 
-- local system checks: No checks specified.
+- Local system checks: No checks specified.
 
 Hostname: test-host
+Memory usage: 79 MB rss, 80 MB heapTotal, 81 MB heapUsed, 82 MB external
 (HealthCheckPOC)",
 }
 `;
