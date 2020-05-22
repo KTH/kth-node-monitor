@@ -14,7 +14,7 @@ const { HealthCheck } = require('kth-node-monitor')
 const systemMonitor = new HealthCheck()
 ```
 
-The new object will have two functions for every supported sub-system (e.g. "ApiClient", "Redis", "Agenda", "MongoDb"). Those function are called "includeRequired..." and "includeOptional...", e.g.
+The new object will have three functions for every supported sub-system (e.g. "ApiClient", "Redis", "Agenda", "MongoDb"). Those function are called "includeRequired...", "includeOptional..." and "include...", e.g.
 
 ```js
 systemMonitor.includeRequiredApiClient(data)
@@ -36,15 +36,15 @@ res.send(systemMonitor.getStatusText())
 
 ## Currently supported sub-systems
 
-|  system   |                                                                                                                                    |
-| :-------: | ---------------------------------------------------------------------------------------------------------------------------------- |
-| ApiClient | `systemMonitor.includeRequiredApiClient({ client, key })` or<br/>`systemMonitor.includeOptionalApiClient({ client, key })`         |
-|    Api    | `systemMonitor.includeRequiredApi({ endpoint })` or<br/>`systemMonitor.includeOptionalApi({ endpoint })`                           |
-|   Ldap    | `systemMonitor.includeRequiredLdap({ ldap })` or<br/>`systemMonitor.includeOptionalLdap({ ldap })`                                 |
-|  MongoDb  | `systemMonitor.includeRequiredMongoDb({ db })` or<br/>`systemMonitor.includeOptionalMongoDb({ db })`                               |
-|   Redis   | `systemMonitor.includeRequiredRedis({ redis, redisOptions })` or<br/>`systemMonitor.includeOptionalRedis({ redis, redisOptions })` |
-|   SqlDb   | `systemMonitor.includeRequiredSqlDb({ db })` or<br/>`systemMonitor.includeOptionalSqlDb({ db })`                                   |
-|  Agenda   | `systemMonitor.includeRequiredAgenda({ agendaState })` or<br/>`systemMonitor.includeOptionalAgenda({ agendaState })`               |
+|  system   |                                                                                                                                                                                                                                           |
+| :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ApiClient | `systemMonitor.includeRequiredApiClient({ client, key, endpointPath })` or<br/>`systemMonitor.includeOptionalApiClient({ client, key, endpointPath })` or<br/>`systemMonitor.includeApiClient({ client, key, endpointPath }, isRequired)` |
+|    Api    | `systemMonitor.includeRequiredApi({ endpoint })` or<br/>`systemMonitor.includeOptionalApi({ endpoint })` or<br/>`systemMonitor.includeApi({ endpoint }, isRequired)`                                                                      |
+|   Ldap    | `systemMonitor.includeRequiredLdap({ ldap, options })` or<br/>`systemMonitor.includeOptionalLdap({ ldap, options })` or<br/>`systemMonitor.includeLdap({ ldap, options }, isRequired)`                                                    |
+|  MongoDb  | `systemMonitor.includeRequiredMongoDb({ db })` or<br/>`systemMonitor.includeOptionalMongoDb({ db })` or<br/>`systemMonitor.includeMongoDb({ db }, isRequired)`                                                                            |
+|   Redis   | `systemMonitor.includeRequiredRedis({ redis, redisOptions })` or<br/>`systemMonitor.includeOptionalRedis({ redis, redisOptions })` or<br/>`systemMonitor.includeRedis({ redis, redisOptions }, isRequired)`                               |
+|   SqlDb   | `systemMonitor.includeRequiredSqlDb({ db })` or<br/>`systemMonitor.includeOptionalSqlDb({ db })` or<br/>`systemMonitor.includeSqlDb({ db }, isRequired)`                                                                                  |
+|  Agenda   | `systemMonitor.includeRequiredAgenda({ agendaState })` or<br/>`systemMonitor.includeOptionalAgenda({ agendaState })` or<br/>`systemMonitor.includeAgenda({ agendaState }, isRequired)`                                                    |
 
 ## Add / Change supported sub-system in `kth-node-monitor`
 
@@ -58,7 +58,7 @@ Description or identifier of the sub-system which will be used in related output
 
 ### `includeSuffix` (string)
 
-Second part for the names of the two related include methods, e.g. "ApiClient" for "includeRequiredApiClient" and "includeOptionalApiClient"
+Second part for the names of the three related include methods, e.g. "ApiClient" for "includeRequiredApiClient", "includeOptionalApiClient" and "includeApiClient"
 
 ### `includeDataIsValid` (function)
 
