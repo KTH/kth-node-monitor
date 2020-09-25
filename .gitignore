@@ -56,3 +56,6 @@ public/js/app/config*.js
 
 .nyc_output
 coverage
+
+package-lock.json
+
