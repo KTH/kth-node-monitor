@@ -27,7 +27,7 @@
   "devDependencies": {
     "@kth/eslint-config-kth": "^1.0.10",
     "@types/jest": "^26.0.23",
-    "eslint": "^7.25.0",
+    "eslint": "^8.0.1",
     "husky": "^7.0.1",
     "jest": "^27.0.0",
     "jest-extended": "^0.11.5",
