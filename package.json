@@ -1,6 +1,6 @@
 {
   "name": "@kth/kth-node-monitor",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Helper for monitor page checks.",
   "automaticPublish": "true",
   "main": "lib/monitorUtil.js",
