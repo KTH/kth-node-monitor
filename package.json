@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@kth/in-memory-cache": "^0.1.28",
-    "kth-node-log": "^3.1.5"
+    "@kth/log": "^4.0.0"
   },
   "prettier": {
     "//": "configuration version 2020-04-10 - might also reside in .prettierrc.json",
