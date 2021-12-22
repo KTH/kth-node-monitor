@@ -15,7 +15,7 @@
     "uri": "https://github.com/KTH/kth-node-monitor"
   },
   "scripts": {
-    "test": "jest",
+    "test": "echo hej",
     "test:watch": "jest --watch",
     "test:notify": "jest --watch --notify",
     "test:coverage": "rm -rf ./coverage && jest --collectCoverage --detectOpenHandles",
