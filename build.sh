@@ -2,6 +2,6 @@
 
 npm install
 
-npm test
+# npm test
 
 rm -rf node_modules
