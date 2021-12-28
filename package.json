@@ -22,7 +22,7 @@
     "build": "./build.sh",
     "linting": "eslint .",
     "linting:fix": "eslint . --fix",
-    "prepare": "bash -c 'if [ -f ./node_modules/.bin/husky ]; then husky install; fi'"
+    "prepare": "if [ -f ./node_modules/.bin/husky ]; then husky install; fi"
   },
   "devDependencies": {
     "@kth/eslint-config-kth": "^2.0.2",
