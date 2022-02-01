@@ -1,4 +1,4 @@
-# kth-node-monitor [![Build Status](https://travis-ci.org/kth/kth-node-monitor.svg?branch=master)](https://travis-ci.org/kth/kth-node-monitor)
+# kth-node-monitor ![Continous Integration](https://github.com/KTH/kth-node-monitor/actions/workflows/main.yml/badge.svg)
 
 Helper utilities for KTH/node-projects
 
