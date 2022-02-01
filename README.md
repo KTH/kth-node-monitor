@@ -30,6 +30,7 @@ Circular dependecies
 ## HealthCheck
 
 Since version 2.0.0 the method of setting up the health check has changed. For this, simply define an array of objects such as this:
+
 ```javascript
 {
   key: apiKey,
@@ -37,7 +38,9 @@ Since version 2.0.0 the method of setting up the health check has changed. For t
   endpoint: api[apiKey],
 }
 ```
+
 Or, alternatively, if you have a custom health check function that you wish to use:
+
 ```javascript
 {
   key: 'some name',
@@ -45,7 +48,9 @@ Or, alternatively, if you have a custom health check function that you wish to u
   getStatus: system => customHealthStatusFunction(system),  // can of course in this case be abbreviated to simply getStatus: customHealthStatusFunction
 }
 ```
+
 LDAP check:
+
 ```javascript
 {
   key: 'ldap',
@@ -54,7 +59,9 @@ LDAP check:
   options: (options for ldap search)
 }
 ```
+
 Redis check:
+
 ```javascript
 {
   key: 'redis',
@@ -63,7 +70,9 @@ Redis check:
   options: (options for redis)
 }
 ```
+
 MongoDb check:
+
 ```javascript
 {
   key: 'mongodb',
@@ -71,7 +80,9 @@ MongoDb check:
   db: (db object)
 }
 ```
+
 SQLDb check:
+
 ```javascript
 {
   key: 'sqldb',
@@ -79,7 +90,9 @@ SQLDb check:
   db: (db object)
 }
 ```
+
 Agenda check:
+
 ```javascript
 {
   key: 'agenda',
@@ -87,7 +100,9 @@ Agenda check:
   agendaState: state for agenda
 }
 ```
+
 Do not forget to add a local object to the array as well:
+
 ```javascript
 {
   key: 'local',
@@ -96,7 +111,26 @@ Do not forget to add a local object to the array as well:
   statusCode: 200,
 }
 ```
-Then send the array to the monitor function along with request/response objects. 
+
+Then send the array to the monitor function along with request/response objects.
+
 ```javascript
 kthNodeMonitor(req, res, arrayOfSystemsToMonitor)
 ```
+
+### URL check
+
+The monitor page will also check that the rest of the application is online and reachable. It will do this by calling the index/root (for web applications) or the swagger page (for APIs).
+However some applications require a special case of address. This can be supplied in the local object, like so:
+
+```javascript
+{
+  key: 'local',
+  testUrl: '/search/widget',
+  isResolved: true,
+  message: '- local system checks: OK',
+  statusCode: 200,
+}
+```
+
+Note that _testUrl_ should not include hostname, port etcetera.
