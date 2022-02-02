@@ -134,3 +134,4 @@ However some applications require a special case of address. This can be supplie
 ```
 
 Note that _testUrl_ should not include hostname, port etcetera.
+The check can be disabled by setting testUrl to _null_.
