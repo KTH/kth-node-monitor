@@ -20,14 +20,14 @@
     "test:notify": "jest --watch --notify",
     "test:coverage": "rm -rf ./coverage && jest --collectCoverage --detectOpenHandles",
     "build": "./build.sh",
-    "linting": "eslint .",
-    "linting:fix": "eslint . --fix",
+    "lint": "eslint \"**/*.js\" --quiet",
+    "lint-v": "eslint \"**/*.js\"",
     "prepare": "if [ -f ./node_modules/.bin/husky ]; then husky install; fi"
   },
   "devDependencies": {
-    "@kth/eslint-config-kth": "^2.0.2",
+    "@kth/eslint-config-kth": "^3.0.6",
     "@types/jest": "^27.0.3",
-    "eslint": "^7.32.0",
+    "eslint": "^8.12.0",
     "husky": "^7.0.4",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
