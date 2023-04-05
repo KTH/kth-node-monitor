@@ -60,11 +60,15 @@ describe('check systems', () => {
     })
   })
   describe('mongodb', () => {
-    const mongoSystem = { key: 'mongodb', db: { isOk: jest.fn() } } as MonitoredSystem
-    it('detects mongodb when key is "mongodb"', async () => {
+    let mongoSystem: MonitoredSystem
+    beforeEach(() => {
+      mongoSystem = { key: 'mongodb', db: { isOk: jest.fn() } } as MonitoredSystem
+    })
+    it('checks mongodb when key is "mongodb"', async () => {
       const checkedSystems = await checkSystems([mongoSystem])
 
       expect(mongoSystem.db.isOk).toHaveBeenCalled()
+      expect(log.warn).not.toHaveBeenCalled()
     })
     it('creates successful result when "db.isOk" responds true', async () => {
       mongoSystem.db.isOk.mockResolvedValue(true)
@@ -79,6 +83,73 @@ describe('check systems', () => {
       const checkedSystems = await checkSystems([mongoSystem])
 
       expect(checkedSystems[0].result?.status).toEqual(false)
+    })
+    it('creates unsuccessful result when "db.isOk" responds with non boolean', async () => {
+      mongoSystem.db.isOk.mockResolvedValue('not_a_bool')
+
+      const checkedSystems = await checkSystems([mongoSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+    })
+    it('creates unsuccessful result when "db.isOk" is not a valid function', async () => {
+      const invalidMongoSystem = { ...mongoSystem, db: { isOk: undefined } }
+
+      const checkedSystems = await checkSystems([invalidMongoSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+  })
+  describe('redis', () => {
+    const redisClient = { ping: jest.fn() }
+    let redisSystem: MonitoredSystem
+    beforeEach(() => {
+      redisSystem = { key: 'redis', redis: jest.fn(), options: { host: 'redis://testredis' } } as MonitoredSystem
+      redisSystem.redis.mockResolvedValue(redisClient)
+    })
+    it('checks redis when key is "redis"', async () => {
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(redisSystem.redis).toHaveBeenCalledWith('HealthCheck', redisSystem.options)
+      expect(log.warn).not.toHaveBeenCalled()
+    })
+    it('creates successful result when "client.ping" responds true', async () => {
+      redisClient.ping.mockResolvedValue(true)
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('creates unsuccessful result when "client.ping" responds false', async () => {
+      redisClient.ping.mockResolvedValue(false)
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+    })
+    it('creates unsuccessful result when "redis" is not a function', async () => {
+      redisSystem.redis = 'not_a_function'
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+    it('creates unsuccessful result when "options" are missing', async () => {
+      delete redisSystem.options
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+    it('creates unsuccessful result when redis client throws error', async () => {
+      redisClient.ping.mockRejectedValue(new Error('some_redis_error'))
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining('some_redis_error'))
     })
   })
 })

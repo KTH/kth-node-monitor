@@ -38,6 +38,8 @@ export type MonitoredSystem = {
   key: string
   required?: boolean
   db?: any
+  redis?: any
+  options?: any
   status?: boolean
   result?: SystemCheckResult
 }
