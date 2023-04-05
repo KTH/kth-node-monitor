@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 import type { MonitoredSystem, ProbeType } from './types'
-import { filterSystems } from './subSystems'
+import { filterSystems, checkSystems } from './subSystems'
 
 const getProbeType = (req: Request): ProbeType => {
   const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
@@ -27,13 +27,13 @@ export const monitorSystems = async (
 
   const systemsToCheck = filterSystems(probeType, monitoredSystems)
 
-  const results = mockCheckSystems(systemsToCheck)
+  const results = await checkSystems(systemsToCheck)
 
   if (req?.headers?.accept === 'application/json') res.json({ message: 'OK', results })
-  else res.type('text').send('APPLICATION_STATUS: OK' + '\n' + results.join('\n'))
+  else res.type('text').send('APPLICATION_STATUS: OK' + '\n' + results.map(printMockresult).join('\n'))
 }
 
-const mockCheckSystems = (systems: MonitoredSystem[]): string[] => systems.map(system => `${system.key} - NOT CHECKED!`)
+const printMockresult = (system: MonitoredSystem): string => `${system.key} - ${system.result?.status}`
 
 module.exports = monitorSystems
 export default monitorSystems

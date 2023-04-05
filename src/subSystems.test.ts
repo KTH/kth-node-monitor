@@ -1,4 +1,7 @@
-import { filterSystems } from './subSystems'
+jest.mock('@kth/log')
+const log = require('@kth/log')
+
+import { filterSystems, checkSystems } from './subSystems'
 import type { MonitoredSystem, ProbeType } from './types'
 
 describe('select systems to include', () => {
@@ -38,5 +41,44 @@ describe('select systems to include', () => {
       ])
     )
     expect(results.length).toBe(systemList.length)
+  })
+})
+
+describe('check systems', () => {
+  describe('unknown systems', () => {
+    const unknownSystem = { key: 'unknownType', unknownField: {} } as unknown as MonitoredSystem
+    it('returns no "result" field when a system is unknown', async () => {
+      const checkedSystems = await checkSystems([unknownSystem])
+
+      expect(checkedSystems[0].key).toEqual('unknownType')
+      expect(checkedSystems[0].result).toEqual(undefined)
+    })
+    it('logs a warning when a system is unknown', async () => {
+      const checkedSystems = await checkSystems([unknownSystem])
+
+      expect(log.warn).toHaveBeenCalled()
+    })
+  })
+  describe('mongodb', () => {
+    const mongoSystem = { key: 'mongodb', db: { isOk: jest.fn() } } as MonitoredSystem
+    it('detects mongodb when key is "mongodb"', async () => {
+      const checkedSystems = await checkSystems([mongoSystem])
+
+      expect(mongoSystem.db.isOk).toHaveBeenCalled()
+    })
+    it('creates successful result when "db.isOk" responds true', async () => {
+      mongoSystem.db.isOk.mockResolvedValue(true)
+
+      const checkedSystems = await checkSystems([mongoSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('creates unsuccessful result when "db.isOk" responds false', async () => {
+      mongoSystem.db.isOk.mockResolvedValue(false)
+
+      const checkedSystems = await checkSystems([mongoSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+    })
   })
 })

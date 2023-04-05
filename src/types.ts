@@ -1,6 +1,14 @@
+export interface SystemCheckResult {
+  status: boolean
+  responseTime?: number
+  message?: string
+}
+
 interface BasicSystem {
   key: string
   required?: boolean
+  status?: boolean
+  result?: SystemCheckResult
 }
 
 interface IsResolvedSystem extends BasicSystem {
@@ -24,6 +32,14 @@ interface CustomCheckSystem extends BasicSystem {
   getStatus: Function
 }
 
-export type MonitoredSystem = MongoSystem | IsResolvedSystem | RedisSystem | SqlSystem | CustomCheckSystem
+export type MonitoredSystem_ = MongoSystem | IsResolvedSystem | RedisSystem | SqlSystem | CustomCheckSystem
+
+export type MonitoredSystem = {
+  key: string
+  required?: boolean
+  db?: any
+  status?: boolean
+  result?: SystemCheckResult
+}
 
 export type ProbeType = 'liveness' | 'readyness' | 'full'

@@ -1,7 +1,8 @@
 jest.mock('./subSystems')
-const { filterSystems } = require('./subSystems')
+const { filterSystems, checkSystems } = require('./subSystems')
 
 filterSystems.mockReturnValue([])
+checkSystems.mockResolvedValue([])
 
 const monitorSystems = require('./monitorUtil')
 
