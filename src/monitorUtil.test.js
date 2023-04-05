@@ -55,5 +55,10 @@ describe('Monitor', () => {
       await monitorSystems(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('liveness', systemList)
     })
+    it('Selects first param if multiple are supplied', async () => {
+      const req = { headers: { accept: 'application/json' }, query: { probe: ['readyness', 'liveness'] } }
+      await monitorSystems(req, mockRes, systemList)
+      expect(filterSystems).toBeCalledWith('readyness', systemList)
+    })
   })
 })

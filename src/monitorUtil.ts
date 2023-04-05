@@ -3,10 +3,12 @@ import type { MonitoredSystem, ProbeType } from './types'
 import { filterSystems } from './subSystems'
 
 const getProbeType = (req: Request): ProbeType => {
-  const probeParam = ((Object.entries(req.query).find(findProbeParam)?.[1] as String) || '').toLowerCase()
+  const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
 
-  if (['liveness', 'readyness', 'full'].includes(probeParam)) {
-    return probeParam as ProbeType
+  const probeValue = (Array.isArray(probeParam) ? probeParam[0] : probeParam || '').toLowerCase()
+
+  if (['liveness', 'readyness', 'full'].includes(probeValue)) {
+    return probeValue as ProbeType
   }
 
   return 'liveness'
