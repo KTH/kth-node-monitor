@@ -16,11 +16,7 @@ const getProbeType = (req: Request): ProbeType => {
 
 const findProbeParam = ([key, _]: [string, any]): boolean => key.toLowerCase() === 'probe'
 
-export const monitorSystems = async (
-  req: Request,
-  res: Response,
-  monitoredSystems: MonitoredSystem[] = []
-): Promise<void> => {
+const monitorSystems = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []): Promise<void> => {
   const contentType = req.headers.accept
 
   const probeType = getProbeType(req)
@@ -36,7 +32,7 @@ export const monitorSystems = async (
 const printMockresult = (system: MonitoredSystem): string => `${system.key} - ${system.result?.status}`
 
 module.exports = monitorSystems
-export default monitorSystems
+module.exports.monitorSystems = monitorSystems
 
 const monitoredSystems = [
   { key: 'mongo', required: Boolean, db: 'kth mongo instance ??' },
