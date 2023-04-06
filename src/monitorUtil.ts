@@ -16,7 +16,8 @@ const getProbeType = (req: Request): ProbeType => {
 
 const findProbeParam = ([key, _]: [string, any]): boolean => key.toLowerCase() === 'probe'
 
-const checksAreOk = (systems: MonitoredSystem[]): boolean => systems.every(system => system.result?.status === true)
+const checksAreOk = (systems: MonitoredSystem[]): boolean =>
+  systems.filter(system => system.ignored != true).every(system => system.result?.status === true)
 
 export const monitorSystems = async (
   req: Request,

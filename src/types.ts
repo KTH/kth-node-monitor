@@ -37,6 +37,7 @@ export type MonitoredSystem_ = MongoSystem | IsResolvedSystem | RedisSystem | Sq
 export type MonitoredSystem = {
   key: string
   required?: boolean
+  ignored?: boolean
   db?: any
   redis?: any
   options?: any

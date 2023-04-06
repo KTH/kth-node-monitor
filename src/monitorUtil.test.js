@@ -103,6 +103,39 @@ describe('Monitor', () => {
         expect(mockRes.status).toBeCalledWith(503)
         expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'ERROR' }))
       })
+      it('Do not count ignored systems when calculating success', async () => {
+        checkSystems.mockResolvedValue([
+          { key: 'system1', result: { status: true } },
+          { key: 'system2', result: { status: true } },
+          { key: 'system3', ignored: true },
+        ])
+
+        await monitorSystems(mockJsonReq, mockRes)
+
+        expect(mockRes.status).toBeCalledWith(200)
+      })
+      it('Do not count ignored systems when calculating failure', async () => {
+        checkSystems.mockResolvedValue([
+          { key: 'system1', result: { status: true } },
+          { key: 'system2', result: { status: false } },
+          { key: 'system3', ignored: true },
+        ])
+
+        await monitorSystems(mockJsonReq, mockRes)
+
+        expect(mockRes.status).toBeCalledWith(503)
+      })
+      it('Count any missing result as failure', async () => {
+        checkSystems.mockResolvedValue([
+          { key: 'system1', result: { status: true } },
+          { key: 'system2', result: { status: true } },
+          { key: 'system3', result: undefined },
+        ])
+
+        await monitorSystems(mockJsonReq, mockRes)
+
+        expect(mockRes.status).toBeCalledWith(503)
+      })
     })
   })
   describe('Detects probe type', () => {

@@ -30,6 +30,7 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   } else if (isKthApiSystem(system)) {
     result.result = await checkKthApiSystem(system)
   } else {
+    result.ignored = true
     log.warn('@kth/monitor - Unknown system', system)
   }
   return result

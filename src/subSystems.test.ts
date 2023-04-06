@@ -53,6 +53,11 @@ describe('check systems', () => {
       expect(checkedSystems[0].key).toEqual('unknownType')
       expect(checkedSystems[0].result).toEqual(undefined)
     })
+    it('sets "ingored" field when a system is unknown', async () => {
+      const checkedSystems = await checkSystems([unknownSystem])
+
+      expect(checkedSystems[0].ignored).toEqual(true)
+    })
     it('logs a warning when a system is unknown', async () => {
       const checkedSystems = await checkSystems([unknownSystem])
 
