@@ -28,7 +28,7 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   } else if (isRedisSystem(system)) {
     result.result = await checkRedisSystem(system)
   } else {
-    log.warn('Unknown system', system)
+    log.warn('@kth/monitor - Unknown system', system)
   }
   return result
 }
@@ -65,6 +65,7 @@ const checkRedisSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
     }
     return { status: false }
   } catch (error: any) {
+    log.error('@kth/monitor - Redis check failed unexpected', error)
     return { status: false, message: (error || '').toString() }
   }
 }

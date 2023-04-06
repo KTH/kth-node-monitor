@@ -144,12 +144,14 @@ describe('check systems', () => {
       expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
     })
     it('creates unsuccessful result when redis client throws error', async () => {
-      redisClient.ping.mockRejectedValue(new Error('some_redis_error'))
+      const error = new Error('some_redis_error')
+      redisClient.ping.mockRejectedValue(error)
 
       const checkedSystems = await checkSystems([redisSystem])
 
       expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining('some_redis_error'))
+      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining(error.message))
+      expect(log.error).toHaveBeenCalledWith(expect.any(String), error)
     })
   })
 })
