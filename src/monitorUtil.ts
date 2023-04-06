@@ -16,7 +16,13 @@ const getProbeType = (req: Request): ProbeType => {
 
 const findProbeParam = ([key, _]: [string, any]): boolean => key.toLowerCase() === 'probe'
 
-const monitorSystems = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []): Promise<void> => {
+const checksAreOk = (systems: MonitoredSystem[]): boolean => systems.every(system => system.result?.status === true)
+
+export const monitorSystems = async (
+  req: Request,
+  res: Response,
+  monitoredSystems: MonitoredSystem[] = []
+): Promise<void> => {
   const contentType = req.headers.accept
 
   const probeType = getProbeType(req)
@@ -25,14 +31,22 @@ const monitorSystems = async (req: Request, res: Response, monitoredSystems: Mon
 
   const results = await checkSystems(systemsToCheck)
 
-  if (req?.headers?.accept === 'application/json') res.json({ message: 'OK', results })
-  else res.type('text').send('APPLICATION_STATUS: OK' + '\n' + results.map(printMockresult).join('\n'))
+  if (checksAreOk(results)) {
+    res.status(200)
+    if (req?.headers?.accept === 'application/json') res.json({ message: 'OK', results })
+    else res.type('text').send('APPLICATION_STATUS: OK' + '\n' + results.map(printMockresult).join('\n'))
+  } else {
+    res.status(503)
+    if (req?.headers?.accept === 'application/json') res.json({ message: 'ERROR', results })
+    else res.type('text').send('APPLICATION_STATUS: ERROR' + '\n' + results.map(printMockresult).join('\n'))
+  }
 }
 
 const printMockresult = (system: MonitoredSystem): string => `${system.key} - ${system.result?.status}`
 
 module.exports = monitorSystems
 module.exports.monitorSystems = monitorSystems
+export default monitorSystems
 
 const monitoredSystems = [
   { key: 'mongo', required: Boolean, db: 'kth mongo instance ??' },
