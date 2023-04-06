@@ -27,6 +27,8 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
     result.result = await checkMongodbSystem(system)
   } else if (isRedisSystem(system)) {
     result.result = await checkRedisSystem(system)
+  } else if (isKthApiSystem(system)) {
+    result.result = await checkKthApiSystem(system)
   } else {
     log.warn('@kth/monitor - Unknown system', system)
   }
@@ -35,6 +37,7 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
 
 const isMongodbSystem = (system: MonitoredSystem): boolean => (system.key === 'mongodb' ? true : false)
 const isRedisSystem = (system: MonitoredSystem): boolean => system.key === 'redis'
+const isKthApiSystem = (system: MonitoredSystem): boolean => system.endpoint != undefined
 
 const checkMongodbSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
   if (typeof system.db?.isOk != 'function') {
@@ -66,6 +69,27 @@ const checkRedisSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
     return { status: false }
   } catch (error: any) {
     log.error('@kth/monitor - Redis check failed unexpected', error)
+    return { status: false, message: (error || '').toString() }
+  }
+}
+
+const checkKthApiSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
+  const { endpoint } = system
+  const baseUrl: string = endpoint.config?.proxyBasePath || ''
+
+  if (typeof endpoint.client?.getAsync != 'function' || !baseUrl) {
+    return { status: false, message: 'invalid configuration' }
+  }
+
+  try {
+    const response = await endpoint.client.getAsync({ uri: `${baseUrl}/_monitor` })
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return { status: true }
+    }
+    return { status: false, message: `Responded with code ${response.statusCode}` }
+  } catch (error: any) {
+    log.error('@kth/monitor - Api check failed unexpected', error)
     return { status: false, message: (error || '').toString() }
   }
 }

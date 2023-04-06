@@ -154,4 +154,78 @@ describe('check systems', () => {
       expect(log.error).toHaveBeenCalledWith(expect.any(String), error)
     })
   })
+  describe('kth rest api', () => {
+    let restSystem: MonitoredSystem
+    beforeEach(() => {
+      restSystem = {
+        key: 'other-system',
+        endpoint: { client: { getAsync: jest.fn() }, config: { proxyBasePath: 'rest-api-path' } },
+      } as MonitoredSystem
+      restSystem.endpoint.client.getAsync.mockResolvedValue({ statusCode: 200 })
+    })
+    it('checks rest api when "endpoint" exists on system', async () => {
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(restSystem.endpoint.client.getAsync).toHaveBeenCalledWith({ uri: 'rest-api-path/_monitor' })
+      expect(log.warn).not.toHaveBeenCalled()
+    })
+    it('creates successful result when system responds with statuscode 200', async () => {
+      restSystem.endpoint.client.getAsync.mockResolvedValue({ statusCode: 200 })
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('creates successful result when system responds with statuscode ~2xx', async () => {
+      const code = 200 + Math.floor(Math.random() * 100)
+      restSystem.endpoint.client.getAsync.mockResolvedValue({ statusCode: code })
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('creates unsuccessful result when system responds with statuscode >= 300', async () => {
+      const code = 300 + Math.floor(Math.random() * 300)
+      restSystem.endpoint.client.getAsync.mockResolvedValue({ statusCode: code })
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining(code.toString()))
+    })
+    it('creates unsuccessful result when "getAsync" is not a function', async () => {
+      restSystem.endpoint.client.getAsync = 'not_a_function'
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+    it('creates unsuccessful result when "config" is missing', async () => {
+      restSystem.endpoint.config = undefined
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+    it('creates unsuccessful result when "config.proxyBasePath" is missing', async () => {
+      restSystem.endpoint.config = {}
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+    it('creates unsuccessful result when "getAsync" throws error', async () => {
+      const error = new Error('some_http_error')
+      restSystem.endpoint.client.getAsync.mockRejectedValue(error)
+
+      const checkedSystems = await checkSystems([restSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining(error.message))
+      expect(log.error).toHaveBeenCalledWith(expect.any(String), error)
+    })
+  })
 })

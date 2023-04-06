@@ -40,6 +40,7 @@ export type MonitoredSystem = {
   db?: any
   redis?: any
   options?: any
+  endpoint?: any
   status?: boolean
   result?: SystemCheckResult
 }
