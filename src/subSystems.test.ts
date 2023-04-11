@@ -275,4 +275,37 @@ describe('check systems', () => {
       expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
     })
   })
+  describe('timeouts', () => {
+    let sqldbSystem: MonitoredSystem
+    beforeEach(() => {
+      jest.useFakeTimers()
+      sqldbSystem = { key: 'sqldb', db: { connect: jest.fn() } } as MonitoredSystem
+    })
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+    it('should success if check takes less than 5000 ms', async () => {
+      sqldbSystem.db.connect.mockImplementation(async () => {
+        await new Promise(resolve => setTimeout(resolve, 4000))
+      })
+
+      const checkPromise = checkSystems([sqldbSystem])
+      jest.advanceTimersToNextTimer()
+      const checkedSystems = await checkPromise
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('should timeout if check takes more than 5000 ms', async () => {
+      sqldbSystem.db.connect.mockImplementation(async () => {
+        await new Promise(resolve => setTimeout(resolve, 6000))
+      })
+
+      const checkPromise = checkSystems([sqldbSystem])
+      jest.advanceTimersToNextTimer()
+      const checkedSystems = await checkPromise
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('system timed out')
+    })
+  })
 })

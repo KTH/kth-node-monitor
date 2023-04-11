@@ -3,6 +3,8 @@ log.init()
 
 import type { MonitoredSystem, ProbeType, SystemCheckResult } from './types'
 
+const SYSTEM_CHECK_TIMEOUT = 5000
+
 export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] = []): MonitoredSystem[] => {
   if (probeType === 'full') {
     return systems
@@ -15,9 +17,25 @@ export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] =
   return []
 }
 
-export const checkSystems = async (systems: MonitoredSystem[]): Promise<MonitoredSystem[]> => {
-  const results = Promise.all(systems.map(checkSystem))
-  return results
+export const checkSystems = async (systems: MonitoredSystem[]): Promise<MonitoredSystem[]> =>
+  Promise.all(systems.map(timeoutWrapper(checkSystem)))
+
+const timeoutWrapper =
+  (checkSystem: (system: MonitoredSystem) => Promise<MonitoredSystem>) => (system: MonitoredSystem) =>
+    Promise.any([
+      // Retur successfull result or timeout, depenting on what resolves fastest
+      checkSystem(system),
+      timeoutSystem(system),
+    ])
+
+const timeoutSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> => {
+  const result = { ...system }
+
+  await sleep(SYSTEM_CHECK_TIMEOUT)
+
+  result.result = { status: false, message: 'system timed out' }
+
+  return result
 }
 
 const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> => {
@@ -113,3 +131,9 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
     return { status: false, message: (error || '').toString() }
   }
 }
+
+const sleep = async (delay: number): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(resolve, delay)
+    timer.unref()
+  })
