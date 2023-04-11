@@ -29,6 +29,8 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
     result.result = await checkRedisSystem(system)
   } else if (isKthApiSystem(system)) {
     result.result = await checkKthApiSystem(system)
+  } else if (isSqldbSystem(system)) {
+    result.result = await checkSqldbSystem(system)
   } else {
     result.ignored = true
     log.warn('@kth/monitor - Unknown system', system)
@@ -36,9 +38,10 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   return result
 }
 
-const isMongodbSystem = (system: MonitoredSystem): boolean => (system.key === 'mongodb' ? true : false)
+const isMongodbSystem = (system: MonitoredSystem): boolean => system.key === 'mongodb'
 const isRedisSystem = (system: MonitoredSystem): boolean => system.key === 'redis'
 const isKthApiSystem = (system: MonitoredSystem): boolean => system.endpoint != undefined
+const isSqldbSystem = (system: MonitoredSystem): boolean => system.key === 'sqldb'
 
 const checkMongodbSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
   if (typeof system.db?.isOk != 'function') {
@@ -91,6 +94,22 @@ const checkKthApiSystem = async (system: MonitoredSystem): Promise<SystemCheckRe
     return { status: false, message: `Responded with code ${response.statusCode}` }
   } catch (error: any) {
     log.error('@kth/monitor - Api check failed unexpected', error)
+    return { status: false, message: (error || '').toString() }
+  }
+}
+
+const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
+  const { db } = system
+
+  if (typeof db.connect != 'function') {
+    return { status: false, message: 'invalid configuration' }
+  }
+
+  try {
+    await db.connect()
+    return { status: true }
+  } catch (error: any) {
+    log.error('@kth/monitor - Sqldb check failed', error)
     return { status: false, message: (error || '').toString() }
   }
 }

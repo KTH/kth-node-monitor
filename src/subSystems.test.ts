@@ -233,4 +233,46 @@ describe('check systems', () => {
       expect(log.error).toHaveBeenCalledWith(expect.any(String), error)
     })
   })
+  describe('sqldb', () => {
+    let sqldbSystem: MonitoredSystem
+    beforeEach(() => {
+      sqldbSystem = { key: 'sqldb', db: { connect: jest.fn() } } as MonitoredSystem
+    })
+    it('checks sqldb when key is "sqldb"', async () => {
+      const checkedSystems = await checkSystems([sqldbSystem])
+
+      expect(sqldbSystem.db.connect).toHaveBeenCalled()
+      expect(log.warn).not.toHaveBeenCalled()
+    })
+    it('creates successful result when "db.connect" resolves', async () => {
+      sqldbSystem.db.connect.mockResolvedValue()
+
+      const checkedSystems = await checkSystems([sqldbSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
+    it('creates unsuccessful result when "db.connect" rejects', async () => {
+      sqldbSystem.db.connect.mockRejectedValue()
+
+      const checkedSystems = await checkSystems([sqldbSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+    })
+    it('creates a message when "db.connect" rejects', async () => {
+      const error = new Error('Sql error')
+      sqldbSystem.db.connect.mockRejectedValue(error)
+
+      const checkedSystems = await checkSystems([sqldbSystem])
+
+      expect(checkedSystems[0].result?.message).toEqual(expect.stringContaining(error.message))
+    })
+    it('creates unsuccessful result when "db.connect" is not a valid function', async () => {
+      const invalidsqldbSystem = { ...sqldbSystem, db: { connect: undefined } }
+
+      const checkedSystems = await checkSystems([invalidsqldbSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('invalid configuration')
+    })
+  })
 })
