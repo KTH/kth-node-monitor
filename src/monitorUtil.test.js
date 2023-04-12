@@ -18,19 +18,19 @@ const mockRes = {
 describe('Monitor', () => {
   it('Returns plain text on default', async () => {
     await monitorRequest(mockPlainReq, mockRes)
-    expect(mockRes.type).toBeCalledWith('text')
+    expect(mockRes.type).toHaveBeenCalledWith('text')
   })
   it('Optionaly returns json', async () => {
     await monitorRequest(mockJsonReq, mockRes)
-    expect(mockRes.json).toBeCalled()
+    expect(mockRes.json).toHaveBeenCalled()
   })
   it('Returns application status as text', async () => {
     await monitorRequest(mockPlainReq, mockRes)
-    expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS/))
+    expect(mockRes.send).toHaveBeenCalledWith(expect.stringMatching(/^APPLICATION_STATUS/))
   })
   it('Returns application status as json', async () => {
     await monitorRequest(mockJsonReq, mockRes)
-    expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }))
+    expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: expect.any(String) }))
   })
 
   describe('Detects response status', () => {
@@ -40,8 +40,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(200)
-        expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
+        expect(mockRes.status).toHaveBeenCalledWith(200)
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
       })
       it('Successfull response if all checks are ok', async () => {
         checkSystems.mockResolvedValue([
@@ -51,8 +51,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(200)
-        expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
+        expect(mockRes.status).toHaveBeenCalledWith(200)
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
       })
       it('Unsuccessfull response if any checks are not ok', async () => {
         checkSystems.mockResolvedValue([
@@ -62,8 +62,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(503)
-        expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: ERROR/))
+        expect(mockRes.status).toHaveBeenCalledWith(503)
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringMatching(/^APPLICATION_STATUS: ERROR/))
       })
     })
     describe('On json request', () => {
@@ -72,8 +72,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(200)
-        expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'OK' }))
+        expect(mockRes.status).toHaveBeenCalledWith(200)
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'OK' }))
       })
       it('Successfull response if all checks are ok', async () => {
         checkSystems.mockResolvedValue([
@@ -83,8 +83,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(200)
-        expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'OK' }))
+        expect(mockRes.status).toHaveBeenCalledWith(200)
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'OK' }))
       })
       it('Unsuccessfull response if any checks are not ok', async () => {
         checkSystems.mockResolvedValue([
@@ -94,8 +94,8 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(503)
-        expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'ERROR' }))
+        expect(mockRes.status).toHaveBeenCalledWith(503)
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'ERROR' }))
       })
       it('Do not count ignored systems when calculating success', async () => {
         checkSystems.mockResolvedValue([
@@ -106,7 +106,7 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(200)
+        expect(mockRes.status).toHaveBeenCalledWith(200)
       })
       it('Do not count ignored systems when calculating failure', async () => {
         checkSystems.mockResolvedValue([
@@ -117,7 +117,7 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(503)
+        expect(mockRes.status).toHaveBeenCalledWith(503)
       })
       it('Count any missing result as failure', async () => {
         checkSystems.mockResolvedValue([
@@ -128,7 +128,7 @@ describe('Monitor', () => {
 
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.status).toBeCalledWith(503)
+        expect(mockRes.status).toHaveBeenCalledWith(503)
       })
     })
   })
@@ -138,33 +138,33 @@ describe('Monitor', () => {
     test('When query contains probe=liveness', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: 'liveness' } }
       await monitorRequest(req, mockRes, systemList)
-      expect(filterSystems).toBeCalledWith('liveness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('liveness', systemList)
     })
     test('When query contains probe=readyness', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: 'readyness' } }
       await monitorRequest(req, mockRes, systemList)
 
-      expect(filterSystems).toBeCalledWith('readyness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('readyness', systemList)
     })
     test('When query params contain uppercase', async () => {
       const req = { headers: { accept: 'application/json' }, query: { PrObe: 'READYness' } }
       await monitorRequest(req, mockRes, systemList)
-      expect(filterSystems).toBeCalledWith('readyness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('readyness', systemList)
     })
     it('Uses liveness when probe param is empty', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: undefined } }
       await monitorRequest(req, mockRes, systemList)
-      expect(filterSystems).toBeCalledWith('liveness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('liveness', systemList)
     })
     it('Uses liveness when probe param is missing', async () => {
       const req = { headers: { accept: 'application/json' }, query: {} }
       await monitorRequest(req, mockRes, systemList)
-      expect(filterSystems).toBeCalledWith('liveness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('liveness', systemList)
     })
     it('Selects first param if multiple are supplied', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: ['readyness', 'liveness'] } }
       await monitorRequest(req, mockRes, systemList)
-      expect(filterSystems).toBeCalledWith('readyness', systemList)
+      expect(filterSystems).toHaveBeenCalledWith('readyness', systemList)
     })
   })
 
@@ -216,7 +216,7 @@ describe('Monitor', () => {
         ])
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.json).toBeCalledWith({
+        expect(mockRes.json).toHaveBeenCalledWith({
           message: 'OK',
           subSystems: [{ key: 'system1', result: { status: true }, ignored: false, required: true }],
         })
@@ -227,7 +227,7 @@ describe('Monitor', () => {
         ])
         await monitorRequest(mockJsonReq, mockRes)
 
-        expect(mockRes.json).toBeCalledWith({
+        expect(mockRes.json).toHaveBeenCalledWith({
           message: 'ERROR',
           subSystems: [{ key: 'system1', result: { status: false }, ignored: false, required: true }],
         })
@@ -241,20 +241,20 @@ describe('Monitor', () => {
         ])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1'))
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system2'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system2'))
       })
       it('shows successfull system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: true }, ignored: false, required: true }])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - OK'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1 - OK'))
       })
       it('shows unsuccessfull system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: false }, ignored: false, required: true }])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - ERROR'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1 - ERROR'))
       })
       it('shows unsuccessfull message if it exists', async () => {
         checkSystems.mockResolvedValue([
@@ -262,13 +262,13 @@ describe('Monitor', () => {
         ])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - ERROR, Responded with 404'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1 - ERROR, Responded with 404'))
       })
       it('shows ignored system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: false }, ignored: true, required: true }])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - Ignored'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1 - Ignored'))
       })
       it('shows complete successfull response', async () => {
         checkSystems.mockResolvedValue([
@@ -277,7 +277,7 @@ describe('Monitor', () => {
         ])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(`APPLICATION_STATUS: OK
+        expect(mockRes.send).toHaveBeenCalledWith(`APPLICATION_STATUS: OK
 system1 - OK
 system2 - OK`)
       })
@@ -288,7 +288,7 @@ system2 - OK`)
         ])
         await monitorRequest(mockPlainReq, mockRes)
 
-        expect(mockRes.send).toBeCalledWith(`APPLICATION_STATUS: ERROR
+        expect(mockRes.send).toHaveBeenCalledWith(`APPLICATION_STATUS: ERROR
 system1 - OK
 system2 - ERROR`)
       })
