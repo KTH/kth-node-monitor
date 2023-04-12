@@ -2,24 +2,7 @@ import type { Request, Response } from 'express'
 import type { MonitoredSystem, ProbeType, MonitorResult } from './types'
 import { filterSystems, checkSystems } from './subSystems'
 
-const getProbeType = (req: Request) => {
-  const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
-
-  const probeValue = (Array.isArray(probeParam) ? probeParam[0] : probeParam || '').toLowerCase()
-
-  if (['liveness', 'readyness', 'full'].includes(probeValue)) {
-    return probeValue as ProbeType
-  }
-
-  return 'liveness'
-}
-
-const findProbeParam = ([key, _]: [string, any]) => key.toLowerCase() === 'probe'
-
-const checksAreOk = (systems: MonitoredSystem[]) =>
-  systems.filter(system => system.ignored != true).every(system => system.result?.status === true)
-
-export const monitorSystems = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []) => {
+export const monitorRequest = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []) => {
   const contentType = req.headers.accept
 
   const probeType = getProbeType(req)
@@ -38,6 +21,23 @@ export const monitorSystems = async (req: Request, res: Response, monitoredSyste
     res.type('text').send(makePlainResponse(status, systemResults))
   }
 }
+
+const getProbeType = (req: Request) => {
+  const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
+
+  const probeValue = (Array.isArray(probeParam) ? probeParam[0] : probeParam || '').toLowerCase()
+
+  if (['liveness', 'readyness', 'full'].includes(probeValue)) {
+    return probeValue as ProbeType
+  }
+
+  return 'liveness'
+}
+
+const findProbeParam = ([key, _]: [string, any]) => key.toLowerCase() === 'probe'
+
+const checksAreOk = (systems: MonitoredSystem[]) =>
+  systems.filter(system => system.ignored != true).every(system => system.result?.status === true)
 
 const makeJsonResponse = (result: MonitorResult, systemResults: MonitoredSystem[]) => ({
   message: result,
@@ -74,17 +74,6 @@ const makePlainSystemMessage = (system: MonitoredSystem) => {
   return 'UNKNOWN'
 }
 
-module.exports = monitorSystems
-module.exports.monitorSystems = monitorSystems
-export default monitorSystems
-
-const monitoredSystems = [
-  { key: 'mongo', required: Boolean, db: 'kth mongo instance ??' },
-
-  { key: 'agenda', required: Boolean, agendaState: Boolean }, // Keep this ?
-  { key: 'ldap', required: Boolean, ldap: 'kth ldap instance ??' }, // keep this ?
-  { key: 'redis', required: Boolean, redis: 'kth redis instance ??' },
-  { key: 'sqldb', required: Boolean, db: 'database file in app repo' },
-  { key: 'any', required: Boolean, getStatus: 'function. returns statusCode, isResolved, message' }, // Used in search-web
-  { key: 'any', required: Boolean, isResolved: Boolean }, // Used for local in node-api
-]
+module.exports = monitorRequest
+module.exports.monitorRequest = monitorRequest
+export default monitorRequest

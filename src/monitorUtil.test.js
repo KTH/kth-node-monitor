@@ -4,7 +4,7 @@ const { filterSystems, checkSystems } = require('./subSystems')
 filterSystems.mockReturnValue([])
 checkSystems.mockResolvedValue([])
 
-const monitorSystems = require('./monitorUtil')
+const { monitorRequest } = require('./monitorUtil')
 
 const mockPlainReq = { headers: {}, query: {} }
 const mockJsonReq = { headers: { accept: 'application/json' }, query: {} }
@@ -17,19 +17,19 @@ const mockRes = {
 
 describe('Monitor', () => {
   it('Returns plain text on default', async () => {
-    await monitorSystems(mockPlainReq, mockRes)
+    await monitorRequest(mockPlainReq, mockRes)
     expect(mockRes.type).toBeCalledWith('text')
   })
   it('Optionaly returns json', async () => {
-    await monitorSystems(mockJsonReq, mockRes)
+    await monitorRequest(mockJsonReq, mockRes)
     expect(mockRes.json).toBeCalled()
   })
   it('Returns application status as text', async () => {
-    await monitorSystems(mockPlainReq, mockRes)
+    await monitorRequest(mockPlainReq, mockRes)
     expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS/))
   })
   it('Returns application status as json', async () => {
-    await monitorSystems(mockJsonReq, mockRes)
+    await monitorRequest(mockJsonReq, mockRes)
     expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: expect.any(String) }))
   })
 
@@ -38,7 +38,7 @@ describe('Monitor', () => {
       it('Successfull response if no systems are checked', async () => {
         checkSystems.mockResolvedValue([])
 
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(200)
         expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
@@ -49,7 +49,7 @@ describe('Monitor', () => {
           { key: 'system2', result: { status: true } },
         ])
 
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(200)
         expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: OK/))
@@ -60,7 +60,7 @@ describe('Monitor', () => {
           { key: 'system2', result: { status: false } },
         ])
 
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(503)
         expect(mockRes.send).toBeCalledWith(expect.stringMatching(/^APPLICATION_STATUS: ERROR/))
@@ -70,7 +70,7 @@ describe('Monitor', () => {
       it('Successfull response if no systems are checked', async () => {
         checkSystems.mockResolvedValue([])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(200)
         expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'OK' }))
@@ -81,7 +81,7 @@ describe('Monitor', () => {
           { key: 'system2', result: { status: true } },
         ])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(200)
         expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'OK' }))
@@ -92,7 +92,7 @@ describe('Monitor', () => {
           { key: 'system2', result: { status: false } },
         ])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(503)
         expect(mockRes.json).toBeCalledWith(expect.objectContaining({ message: 'ERROR' }))
@@ -104,7 +104,7 @@ describe('Monitor', () => {
           { key: 'system3', ignored: true },
         ])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(200)
       })
@@ -115,7 +115,7 @@ describe('Monitor', () => {
           { key: 'system3', ignored: true },
         ])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(503)
       })
@@ -126,7 +126,7 @@ describe('Monitor', () => {
           { key: 'system3', result: undefined },
         ])
 
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.status).toBeCalledWith(503)
       })
@@ -137,33 +137,33 @@ describe('Monitor', () => {
     const systemList = [{ key: 'some_system' }, { key: 'some_other_system' }]
     test('When query contains probe=liveness', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: 'liveness' } }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('liveness', systemList)
     })
     test('When query contains probe=readyness', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: 'readyness' } }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
 
       expect(filterSystems).toBeCalledWith('readyness', systemList)
     })
     test('When query params contain uppercase', async () => {
       const req = { headers: { accept: 'application/json' }, query: { PrObe: 'READYness' } }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('readyness', systemList)
     })
     it('Uses liveness when probe param is empty', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: undefined } }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('liveness', systemList)
     })
     it('Uses liveness when probe param is missing', async () => {
       const req = { headers: { accept: 'application/json' }, query: {} }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('liveness', systemList)
     })
     it('Selects first param if multiple are supplied', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: ['readyness', 'liveness'] } }
-      await monitorSystems(req, mockRes, systemList)
+      await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toBeCalledWith('readyness', systemList)
     })
   })
@@ -179,7 +179,7 @@ describe('Monitor', () => {
           { key: 'system1', result: { status: true } },
           { key: 'system2', result: { status: true } },
         ])
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems).toHaveLength(2)
         expect(result.subSystems).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'system1' })]))
@@ -191,7 +191,7 @@ describe('Monitor', () => {
           result = json
         })
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: true }, ignored: false, required: true }])
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ key: expect.anything() }))
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ result: expect.anything() }))
@@ -204,7 +204,7 @@ describe('Monitor', () => {
           result = json
         })
         checkSystems.mockResolvedValue([{ key: 'system1', delete_me: 'garbage data', ignore_me: { data: 'garbage' } }])
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ key: expect.anything() }))
         expect(result.subSystems[0]).not.toEqual(expect.objectContaining({ delete_me: expect.anything() }))
@@ -214,7 +214,7 @@ describe('Monitor', () => {
         checkSystems.mockResolvedValue([
           { key: 'system1', result: { status: true }, ignored: false, required: true, deleteMe: 'garbage data' },
         ])
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.json).toBeCalledWith({
           message: 'OK',
@@ -225,7 +225,7 @@ describe('Monitor', () => {
         checkSystems.mockResolvedValue([
           { key: 'system1', result: { status: false }, ignored: false, required: true, deleteMe: 'garbage data' },
         ])
-        await monitorSystems(mockJsonReq, mockRes)
+        await monitorRequest(mockJsonReq, mockRes)
 
         expect(mockRes.json).toBeCalledWith({
           message: 'ERROR',
@@ -239,20 +239,20 @@ describe('Monitor', () => {
           { key: 'system1', result: { status: true } },
           { key: 'system2', result: { status: true } },
         ])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1'))
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system2'))
       })
       it('shows successfull system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: true }, ignored: false, required: true }])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - OK'))
       })
       it('shows unsuccessfull system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: false }, ignored: false, required: true }])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - ERROR'))
       })
@@ -260,13 +260,13 @@ describe('Monitor', () => {
         checkSystems.mockResolvedValue([
           { key: 'system1', result: { status: false, message: 'Responded with 404' }, ignored: false, required: true },
         ])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - ERROR, Responded with 404'))
       })
       it('shows ignored system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: false }, ignored: true, required: true }])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(expect.stringContaining('system1 - Ignored'))
       })
@@ -275,7 +275,7 @@ describe('Monitor', () => {
           { key: 'system1', result: { status: true } },
           { key: 'system2', result: { status: true } },
         ])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(`APPLICATION_STATUS: OK
 system1 - OK
@@ -286,7 +286,7 @@ system2 - OK`)
           { key: 'system1', result: { status: true } },
           { key: 'system2', result: { status: false } },
         ])
-        await monitorSystems(mockPlainReq, mockRes)
+        await monitorRequest(mockPlainReq, mockRes)
 
         expect(mockRes.send).toBeCalledWith(`APPLICATION_STATUS: ERROR
 system1 - OK
