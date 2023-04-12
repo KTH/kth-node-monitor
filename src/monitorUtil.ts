@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import type { MonitoredSystem, ProbeType } from './types'
 import { filterSystems, checkSystems } from './subSystems'
 
-const getProbeType = (req: Request): ProbeType => {
+const getProbeType = (req: Request) => {
   const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
 
   const probeValue = (Array.isArray(probeParam) ? probeParam[0] : probeParam || '').toLowerCase()
@@ -14,16 +14,12 @@ const getProbeType = (req: Request): ProbeType => {
   return 'liveness'
 }
 
-const findProbeParam = ([key, _]: [string, any]): boolean => key.toLowerCase() === 'probe'
+const findProbeParam = ([key, _]: [string, any]) => key.toLowerCase() === 'probe'
 
-const checksAreOk = (systems: MonitoredSystem[]): boolean =>
+const checksAreOk = (systems: MonitoredSystem[]) =>
   systems.filter(system => system.ignored != true).every(system => system.result?.status === true)
 
-export const monitorSystems = async (
-  req: Request,
-  res: Response,
-  monitoredSystems: MonitoredSystem[] = []
-): Promise<void> => {
+export const monitorSystems = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []) => {
   const contentType = req.headers.accept
 
   const probeType = getProbeType(req)
@@ -43,7 +39,7 @@ export const monitorSystems = async (
   }
 }
 
-const printMockresult = (system: MonitoredSystem): string => `${system.key} - ${system.result?.status}`
+const printMockresult = (system: MonitoredSystem) => `${system.key} - ${system.result?.status}`
 
 module.exports = monitorSystems
 module.exports.monitorSystems = monitorSystems

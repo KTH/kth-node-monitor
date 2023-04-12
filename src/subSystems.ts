@@ -5,7 +5,7 @@ import type { MonitoredSystem, ProbeType, SystemCheckResult } from './types'
 
 const SYSTEM_CHECK_TIMEOUT = 5000
 
-export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] = []): MonitoredSystem[] => {
+export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] = []) => {
   if (probeType === 'full') {
     return systems
   }
@@ -17,16 +17,14 @@ export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] =
   return []
 }
 
-export const checkSystems = async (systems: MonitoredSystem[]): Promise<MonitoredSystem[]> =>
-  Promise.all(systems.map(timeoutWrapper(checkSystem)))
+export const checkSystems = async (systems: MonitoredSystem[]) => Promise.all(systems.map(checkSystemOrTimeout))
 
-const timeoutWrapper =
-  (checkSystem: (system: MonitoredSystem) => Promise<MonitoredSystem>) => (system: MonitoredSystem) =>
-    Promise.any([
-      // Retur successfull result or timeout, depenting on what resolves fastest
-      checkSystem(system),
-      timeoutSystem(system),
-    ])
+const checkSystemOrTimeout = (system: MonitoredSystem) =>
+  Promise.any([
+    // Return successfull result or timeout, depenting on what resolves fastest
+    checkSystem(system),
+    timeoutSystem(system),
+  ])
 
 const timeoutSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> => {
   const result = { ...system }
@@ -56,10 +54,10 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   return result
 }
 
-const isMongodbSystem = (system: MonitoredSystem): boolean => system.key === 'mongodb'
-const isRedisSystem = (system: MonitoredSystem): boolean => system.key === 'redis'
-const isKthApiSystem = (system: MonitoredSystem): boolean => system.endpoint != undefined
-const isSqldbSystem = (system: MonitoredSystem): boolean => system.key === 'sqldb'
+const isMongodbSystem = (system: MonitoredSystem) => system.key === 'mongodb'
+const isRedisSystem = (system: MonitoredSystem) => system.key === 'redis'
+const isKthApiSystem = (system: MonitoredSystem) => system.endpoint != undefined
+const isSqldbSystem = (system: MonitoredSystem) => system.key === 'sqldb'
 
 const checkMongodbSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
   if (typeof system.db?.isOk != 'function') {
@@ -132,7 +130,7 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
   }
 }
 
-const sleep = async (delay: number): Promise<void> =>
+const sleep = async (delay: number) =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(resolve, delay)
     timer.unref()
