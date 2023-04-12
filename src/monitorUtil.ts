@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'
-import type { MonitoredSystem, ProbeType } from './types'
+import type { MonitoredSystem, ProbeType, MonitorResult } from './types'
 import { filterSystems, checkSystems } from './subSystems'
 
 const getProbeType = (req: Request) => {
@@ -26,20 +26,53 @@ export const monitorSystems = async (req: Request, res: Response, monitoredSyste
 
   const systemsToCheck = filterSystems(probeType, monitoredSystems)
 
-  const results = await checkSystems(systemsToCheck)
+  const systemResults = await checkSystems(systemsToCheck)
 
-  if (checksAreOk(results)) {
-    res.status(200)
-    if (req?.headers?.accept === 'application/json') res.json({ message: 'OK', results })
-    else res.type('text').send('APPLICATION_STATUS: OK' + '\n' + results.map(printMockresult).join('\n'))
+  const status: MonitorResult = checksAreOk(systemResults) ? 'OK' : 'ERROR'
+
+  res.status(checksAreOk(systemResults) ? 200 : 503)
+
+  if (req?.headers?.accept === 'application/json') {
+    res.json(makeJsonResponse(status, systemResults))
   } else {
-    res.status(503)
-    if (req?.headers?.accept === 'application/json') res.json({ message: 'ERROR', results })
-    else res.type('text').send('APPLICATION_STATUS: ERROR' + '\n' + results.map(printMockresult).join('\n'))
+    res.type('text').send(makePlainResponse(status, systemResults))
   }
 }
 
-const printMockresult = (system: MonitoredSystem) => `${system.key} - ${system.result?.status}`
+const makeJsonResponse = (result: MonitorResult, systemResults: MonitoredSystem[]) => ({
+  message: result,
+  subSystems: systemResults.map(system => {
+    const { key, result, ignored, required } = system
+    return { key, result, ignored, required }
+  }),
+})
+
+const makePlainResponse = (result: MonitorResult, systemResults: MonitoredSystem[]) => {
+  const header = `APPLICATION_STATUS: ${result}`
+
+  const subSystems = systemResults.map(system => {
+    const systemMessage = makePlainSystemMessage(system)
+    return `${system.key} - ${systemMessage}`
+  })
+
+  return [header, ...subSystems].join('\n')
+}
+
+const makePlainSystemMessage = (system: MonitoredSystem) => {
+  if (system.ignored) {
+    return 'Ignored'
+  }
+  if (system.result?.status === true) {
+    return 'OK'
+  }
+  if (system.result?.status === false && system.result?.message) {
+    return `ERROR, ${system.result.message}`
+  }
+  if (system.result?.status === false) {
+    return 'ERROR'
+  }
+  return 'UNKNOWN'
+}
 
 module.exports = monitorSystems
 module.exports.monitorSystems = monitorSystems

@@ -47,3 +47,5 @@ export type MonitoredSystem = {
 }
 
 export type ProbeType = 'liveness' | 'readyness' | 'full'
+
+export type MonitorResult = 'OK' | 'ERROR'
