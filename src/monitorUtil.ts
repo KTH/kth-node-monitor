@@ -3,8 +3,6 @@ import type { MonitoredSystem, ProbeType, MonitorResult } from './types'
 import { filterSystems, checkSystems } from './subSystems'
 
 export const monitorRequest = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[] = []) => {
-  const contentType = req.headers.accept
-
   const probeType = getProbeType(req)
 
   const systemsToCheck = filterSystems(probeType, monitoredSystems)

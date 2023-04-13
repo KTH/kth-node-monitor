@@ -87,7 +87,7 @@ const checkRedisSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
       return { status: true }
     }
     return { status: false }
-  } catch (error: any) {
+  } catch (error: unknown) {
     log.error('@kth/monitor - Redis check failed unexpected', error)
     return { status: false, message: (error || '').toString() }
   }
