@@ -154,9 +154,11 @@ Each system result has an optional "message" field, used when whings gone wrong.
 
 A simple request
 
-```http
-GET /_monitor?probe=readyness
+```bash
+curl '/_monitor?probe=readyness'
+```
 
+```
 APPLICATION_STATUS: OK
 mongodb - OK
 mongodb - OK
