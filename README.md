@@ -1,137 +1,193 @@
-# kth-node-monitor ![Continous Integration](https://github.com/KTH/kth-node-monitor/actions/workflows/main.yml/badge.svg)
+# @kth/monitor ![Continous Integration](https://github.com/KTH/kth-node-monitor/actions/workflows/main.yml/badge.svg)
 
 Helper utilities for KTH/node-projects
 
-Some use cases to consider:
+## Changes in v4
 
-- no answer from \_monitor
-- slow response times
-- circular dependencies
-- service down
+There are some major changes, but hopefully nothing that should break current implementations.
 
-Circular dependecies
+### Typescript
 
-- on start up and REQUIRED dep is down
-  we add subsystems from ../init/api and a dependecy won't be checked
-  until the apiClient has been correctly initiated so we will be staged
-  by Netscaler
+Package is now in typescript.
+Usage in vanilla-js-apps should work as before.
 
-- running and REQUIRED dep goes down
-  we will report fail and be unstaged by Netscaler, when dep is started and
-  staged again we will report OK and we will be staged by Netscaler again
+### 3 levels of monitoring
 
-- running and REQUIRED dep goes up again
+Different level of dependency check will now be performed depending on the "probe"-parameter supplied to a request, like `/_monitor?probe=readyness`
 
-- if circular deps and roundtrip takes more than 1s
-  there will be an infinite call loop and the original caller will time out
-  and if REQUIRED will cause unstaging by Netscaler. Then all deps will be unstaged.
-  Services will need to be restarted in order to return OK and be staged by Netscaler
+- **liveness**
+  Checks only the application, no dependencies.
 
-## HealthCheck
+- **readyness**
+  Checks the application, and the system that are exlusive for the application, _redis_, _sqldb_ and _mongodb_
 
-Since version 2.0.0 the method of setting up the health check has changed. For this, simply define an array of objects such as this:
+- **full**
+  Checks the application and all dependencies. Calls to other api's are done to their _liveness_ probe, to prevent circullar calls.
 
-```javascript
-{
-  key: apiKey,
-  required: apiConfig[apiKey].required,
-  endpoint: api[apiKey],
+If no probe param is supplied, liveness check is performed.
+
+### Unused and superfluous systems removed.
+
+Some systems are removed, to simplify the package.
+
+- **local**
+  This was checking a local page in web-apps, which had lot of unintended external dependencies, or the /swagger endpoint in api's, which is not critical for operation.
+  In most cases, if the monitor is able to respond, then the app is alive.
+
+- **agenda**
+  Agenda configuration is run at startup, and should not change during runtime. It is better checked in the /\_status andpoint.
+  Issues with mongodb can cause agenda to fail, but that is checked in other places.
+
+- **ldap**
+  This does not seem to be used anywhere anymore.
+
+- **custom function**
+  Custom getStatus function. Had a low usage-rate and complex implementation.
+
+If any deprecated systems remain in the config, the monitor will still work, but warnings will be logged.
+If you use typescript the above systems will not be accepted.
+
+If you feel that something you really need is removed, please open a issue in this repo, or contact the webb-team.
+
+### Required-flag
+
+The `required`-option on subsystems still exists, but currently has no effect on the monitor result.
+
+## Usage
+
+Usage example:
+
+```typescript
+import { monitorRequest } from '@kth/monitor'
+
+async function getMonitor(req, res) {
+  try {
+    await monitorRequest(req, res, [
+      {
+        key: 'mongodb',
+        db,
+      },
+      // Add systems to check here
+    ])
+  } catch (error) {
+    log.error(`Monitor failed`, error)
+    res.status(500).end()
+  }
 }
 ```
 
-Or, alternatively, if you have a custom health check function that you wish to use:
+**monitorRequest**
 
-```javascript
+```typescript
+monitorRequest = async (req: Request, res: Response, monitoredSystems: MonitoredSystem[])
+```
+
+A helper method that handles an express request to the monitor endpoint.
+
+### System checks
+
+**MongoDb**  
+Checked on _readyness_ probes
+
+```typescript
 {
-  key: 'some name',
-  required: true, // if required
-  getStatus: system => customHealthStatusFunction(system),  // can of course in this case be abbreviated to simply getStatus: customHealthStatusFunction
+  key: 'mongodb',
+  db: (instance of @kth/mongo)
 }
 ```
 
-LDAP check:
+**Redis**  
+Checked on _readyness_ probes
 
-```javascript
-{
-  key: 'ldap',
-  required: true, // if required
-  ldap: (ldap object)
-  options: (options for ldap search)
-}
-```
-
-Redis check:
-
-```javascript
+```typescript
 {
   key: 'redis',
-  required: true, // if required
-  redis: (redis object)
+  redis: (instance of @kth/redis)
   options: (options for redis)
 }
 ```
 
-MongoDb check:
+**SQLDb**  
+Checked on _readyness_ probes
 
-```javascript
-{
-  key: 'mongodb',
-  required: true, // if required
-  db: (db object)
-}
-```
-
-SQLDb check:
-
-```javascript
+```typescript
 {
   key: 'sqldb',
-  required: true, // if required
-  db: (db object)
+  db: {
+    connect: // async function implementing database connection
+  }
 }
 ```
 
-Agenda check:
+**KTH Node-api**  
+Checked on _full_ probes
 
-```javascript
+```typescript
+const api = require('../api') //'@kth/api-call' intances
+
 {
-  key: 'agenda',
-  required: true, // if required
-  agendaState: state for agenda
+  key: apiName,
+  endpoint: api[apiName],
 }
 ```
 
-Do not forget to add a local object to the array as well:
+## The \_monitor request
 
-```javascript
+### Http params
+
+The monitor checks the "probe" param to determine the level of checks to perform.
+
+### Response type
+
+The response is by default in plain text.  
+Use header `'accept: application/json'` for Json-response.
+
+### Timeout
+
+Checks on sub-systems has a timeout of 5 seconds.
+
+### Result
+
+Each system result has an optional "message" field, used when whings gone wrong. This is not structured in a specific way, so do not parse this with code.
+
+### Examples
+
+A simple request
+
+```http
+GET /_monitor?probe=readyness
+
+APPLICATION_STATUS: OK
+mongodb - OK
+mongodb - OK
+```
+
+A failing JSON request
+
+```bash
+curl --request GET \
+  --url '/_monitor?probe=full' \
+  --header 'accept: application/json'
+```
+
+```json
 {
-  key: 'local',
-  isResolved: true,
-  message: '- local system checks: OK',
-  statusCode: 200,
+  "message": "ERROR",
+  "subSystems": [
+    {
+      "key": "nodeApi",
+      "result": {
+        "status": false,
+        "message": "FetchError: request to /api/node/_monitor failed, reason: connect ECONNREFUSED"
+      }
+    },
+    {
+      "key": "redis",
+      "result": {
+        "status": false,
+        "message": "system timed out"
+      }
+    }
+  ]
 }
 ```
-
-Then send the array to the monitor function along with request/response objects.
-
-```javascript
-kthNodeMonitor(req, res, arrayOfSystemsToMonitor)
-```
-
-### URL check
-
-The monitor page will also check that the rest of the application is online and reachable. It will do this by calling the index/root (for web applications) or the swagger page (for APIs).
-However some applications require a special case of address. This can be supplied in the local object, like so:
-
-```javascript
-{
-  key: 'local',
-  testUrl: '/search/widget',
-  isResolved: true,
-  message: '- local system checks: OK',
-  statusCode: 200,
-}
-```
-
-Note that _testUrl_ should not include hostname, port etcetera.
-The check can be disabled by setting testUrl to _null_.
