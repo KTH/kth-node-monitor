@@ -161,6 +161,11 @@ describe('Monitor', () => {
       await monitorRequest(req, mockRes, systemList)
       expect(filterSystems).toHaveBeenCalledWith('liveness', systemList)
     })
+    it('Uses liveness when query object is missing', async () => {
+      const req = { headers: { accept: 'application/json' } }
+      await monitorRequest(req, mockRes, systemList)
+      expect(filterSystems).toHaveBeenCalledWith('liveness', systemList)
+    })
     it('Selects first param if multiple are supplied', async () => {
       const req = { headers: { accept: 'application/json' }, query: { probe: ['readyness', 'liveness'] } }
       await monitorRequest(req, mockRes, systemList)

@@ -21,6 +21,10 @@ export const monitorRequest = async (req: Request, res: Response, monitoredSyste
 }
 
 const getProbeType = (req: Request) => {
+  if (!req.query) {
+    return 'liveness'
+  }
+
   const probeParam = Object.entries(req.query).find(findProbeParam)?.[1] as String
 
   const probeValue = (Array.isArray(probeParam) ? probeParam[0] : probeParam || '').toLowerCase()
