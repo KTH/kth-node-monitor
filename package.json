@@ -2,7 +2,7 @@
   "name": "@kth/monitor",
   "version": "4.0.0",
   "description": "Helper for monitor page checks.",
-  "automaticPublish": "false",
+  "automaticPublish": "true",
   "main": "dist/monitorUtil.js",
   "types": "dist/monitorUtil.d.ts",
   "author": {
