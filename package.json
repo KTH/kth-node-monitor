@@ -1,6 +1,6 @@
 {
   "name": "@kth/monitor",
-  "version": "4.0.0-alpha.15",
+  "version": "4.0.0-alpha.16",
   "description": "Helper for monitor page checks.",
   "automaticPublish": "true",
   "main": "dist/monitorUtil.js",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "uri": "https://github.com/KTH/kth-node-monitor"
+    "url": "https://github.com/KTH/kth-node-monitor.git"
   },
   "scripts": {
     "test": "jest",
