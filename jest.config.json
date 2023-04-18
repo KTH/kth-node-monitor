@@ -1,0 +1,8 @@
+{
+  "preset": "ts-jest",
+  "clearMocks": true,
+  "notifyMode": "failure-change",
+  // "setupFilesAfterEnv": ["jest-extended/all"],
+  "testEnvironment": "node",
+  "verbose": true
+}

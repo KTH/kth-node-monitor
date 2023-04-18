@@ -3,5 +3,6 @@
 npm install
 
 # npm test
+tsc
 
 rm -rf node_modules
