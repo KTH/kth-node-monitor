@@ -22,6 +22,5 @@ jobs:
           SLACK_CHANNELS: '#team-kth-webb-build'
           NPM_UPDATES_AVAILABLE: True
           BUILD_INFORMATION_OUTPUT_FILE: '/config/version.js'
-          BRANCHES_SAVE_STARTING_WITH: 'refs/heads/feature/only-local-monitor'
         run: |
           ${{ secrets.EVOLENE_RUN_COMMAND }}
