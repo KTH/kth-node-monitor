@@ -41,6 +41,9 @@
   "jshintConfig": {
     "maxerr": 5
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@kth/log": "^4.0.5"
   },
