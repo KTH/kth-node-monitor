@@ -2,7 +2,6 @@
   "name": "@kth/monitor",
   "version": "4.0.0",
   "description": "Helper for monitor page checks.",
-  "automaticPublish": "true",
   "main": "dist/monitorUtil.js",
   "types": "dist/monitorUtil.d.ts",
   "author": {
@@ -15,6 +14,12 @@
     "type": "git",
     "url": "https://github.com/KTH/kth-node-monitor.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -41,9 +46,6 @@
   "jshintConfig": {
     "maxerr": 5
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "@kth/log": "^4.0.5"
   },
