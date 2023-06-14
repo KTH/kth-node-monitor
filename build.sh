@@ -1,6 +1,8 @@
 #!/bin/sh
 
-npm install
+set -e
+
+npm ci
 
 # npm test
 tsc
