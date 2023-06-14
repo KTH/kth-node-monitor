@@ -1,6 +1,6 @@
 {
   "name": "@kth/monitor",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "Helper for monitor page checks.",
   "main": "dist/monitorUtil.js",
   "types": "dist/monitorUtil.d.ts",
