@@ -13,6 +13,7 @@ const mockRes = {
   type: jest.fn(() => mockRes),
   send: jest.fn(() => mockRes),
   json: jest.fn(() => mockRes),
+  set: jest.fn(() => mockRes),
 }
 
 describe('Monitor', () => {

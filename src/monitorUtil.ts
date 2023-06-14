@@ -12,6 +12,7 @@ export const monitorRequest = async (req: Request, res: Response, monitoredSyste
   const status: MonitorResult = checksAreOk(systemResults) ? 'OK' : 'ERROR'
 
   res.status(checksAreOk(systemResults) ? 200 : 503)
+  res.set('Cache-control', `no-store`)
 
   if (req?.headers?.accept === 'application/json') {
     res.json(makeJsonResponse(status, systemResults))
