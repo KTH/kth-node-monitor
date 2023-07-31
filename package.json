@@ -3,6 +3,9 @@
   "version": "4.1.0",
   "description": "Helper for monitor page checks.",
   "main": "dist/monitorUtil.js",
+  "files": [
+    "dist"
+  ],
   "types": "dist/monitorUtil.d.ts",
   "author": {
     "name": "KTH",
@@ -17,9 +20,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
