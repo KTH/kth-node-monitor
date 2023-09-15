@@ -6,6 +6,9 @@ export interface SystemCheckResult {
 
 export type MonitoredSystem = {
   key: string
+  name?: string
+  isOk?: boolean
+  message?: string
   required?: boolean
   ignored?: boolean
   db?: any

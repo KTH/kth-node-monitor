@@ -11,7 +11,7 @@ export const filterSystems = (probeType: ProbeType, systems: MonitoredSystem[] =
   }
 
   if (probeType === 'readyness') {
-    return systems.filter(system => ['redis', 'mongodb', 'sqldb'].includes(system.key))
+    return systems.filter(system => ['redis', 'mongodb', 'sqldb', 'custom'].includes(system.key))
   }
 
   return []
@@ -47,6 +47,8 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
     result.result = await checkKthApiSystem(system)
   } else if (isSqldbSystem(system)) {
     result.result = await checkSqldbSystem(system)
+  } else if (isValidCustomSystem(system)) {
+    result.result = checkCustomSystem(system)
   } else {
     result.ignored = true
     log.warn('@kth/monitor - Unknown system', system)
@@ -58,6 +60,7 @@ const isMongodbSystem = (system: MonitoredSystem) => system.key === 'mongodb'
 const isRedisSystem = (system: MonitoredSystem) => system.key === 'redis'
 const isKthApiSystem = (system: MonitoredSystem) => system.endpoint != undefined
 const isSqldbSystem = (system: MonitoredSystem) => system.key === 'sqldb'
+const isValidCustomSystem = (system: MonitoredSystem) => system.key === 'custom'
 
 const checkMongodbSystem = async (system: MonitoredSystem): Promise<SystemCheckResult> => {
   if (typeof system.db?.isOk != 'function') {
@@ -128,6 +131,18 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
     log.error('@kth/monitor - Sqldb check failed', error)
     return { status: false, message: (error || '').toString() }
   }
+}
+
+const checkCustomSystem = (system: MonitoredSystem): SystemCheckResult | undefined => {
+  const { isOk, message } = system
+
+  if (isOk != undefined && typeof isOk == 'boolean') {
+    return {
+      status: isOk,
+      message,
+    }
+  }
+  log.error('@kth/monitor - custom system missing property "isOk"', system)
 }
 
 const sleep = async (delay: number) =>

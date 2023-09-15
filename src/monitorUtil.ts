@@ -46,7 +46,8 @@ const makeJsonResponse = (result: MonitorResult, systemResults: MonitoredSystem[
   message: result,
   subSystems: systemResults.map(system => {
     const { key, result, ignored, required } = system
-    return { key, result, ignored, required }
+    const name = system.name || system.key
+    return { key, name, result, ignored, required }
   }),
 })
 
@@ -55,7 +56,7 @@ const makePlainResponse = (result: MonitorResult, systemResults: MonitoredSystem
 
   const subSystems = systemResults.map(system => {
     const systemMessage = makePlainSystemMessage(system)
-    return `${system.key} - ${systemMessage}`
+    return `${system.name || system.key} - ${systemMessage}`
   })
 
   return [header, ...subSystems].join('\n')
