@@ -52,20 +52,31 @@ describe('check systems', () => {
     const successfulSystem: MonitoredSystem = {
       key: 'custom',
       name: 'customSystem',
-      isOk: true,
-      message: 'Some custom message',
+      customCheck: {
+        isOk: true,
+        message: 'Some custom message',
+      },
     }
     const unsuccessfulSystem: MonitoredSystem = {
       key: 'custom',
       name: 'unsuccessfulSystem',
-      isOk: false,
-      message: 'Some error from custom subSystem',
+      customCheck: {
+        isOk: false,
+        message: 'Some error from custom subSystem',
+      },
     }
     const invalidCustomSystem: MonitoredSystem = {
       key: 'custom',
       name: 'invalidCustomSystem',
-      // @ts-ignore
-      isOk: 200,
+      customCheck: {
+        // @ts-ignore
+        isOk: 200,
+      },
+    }
+
+    const customSystemMissingCustomCheck: MonitoredSystem = {
+      key: 'custom',
+      name: 'customSystemMissingCustomCheck',
     }
 
     it('creates a successful result when "isOk" is true', async () => {
@@ -84,12 +95,30 @@ describe('check systems', () => {
       expect(checkedSystems[0].result?.message).toEqual('Some error from custom subSystem')
     })
 
-    it('returns no "result" field when a custom system does not contain a boolean property "isOk"', async () => {
-      const checkedSystems = await checkSystems([invalidCustomSystem])
-
-      expect(checkedSystems[0].name).toEqual('invalidCustomSystem')
-      expect(checkedSystems[0].result).toEqual(undefined)
+    it('creates an unsuccessful result if property customCheck is missing', async () => {
+      const checkedSystems = await checkSystems([customSystemMissingCustomCheck])
+      expect(checkedSystems[0].name).toEqual('customSystemMissingCustomCheck')
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toContain(
+        'invalid configuration: custom system missing required property "customCheck"'
+      )
     })
+
+    it('creates an unsuccessful result if property customCheck is missing', async () => {
+      const checkedSystems = await checkSystems([invalidCustomSystem])
+      expect(checkedSystems[0].name).toEqual('invalidCustomSystem')
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toContain(
+        'invalid configuration: custom system missing required property "isOk"'
+      )
+    })
+
+    // it('returns no "result" field when a custom system does not contain a boolean property "isOk"', async () => {
+    //   const checkedSystems = await checkSystems([invalidCustomSystem])
+
+    //   expect(checkedSystems[0].name).toEqual('invalidCustomSystem')
+    //   expect(checkedSystems[0].result).toEqual(undefined)
+    // })
 
     it('logs a warning when a custom system does not contain a boolean property "isOk"', async () => {
       await checkSystems([invalidCustomSystem])

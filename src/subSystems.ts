@@ -134,15 +134,23 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
 }
 
 const checkCustomSystem = (system: MonitoredSystem): SystemCheckResult | undefined => {
-  const { isOk, message } = system
-
-  if (isOk != undefined && typeof isOk == 'boolean') {
-    return {
-      status: isOk,
-      message,
+  try {
+    if (!system.customCheck) {
+      throw new Error('invalid configuration: custom system missing required property "customCheck"')
     }
+    const { isOk, message } = system.customCheck
+
+    if (isOk != undefined && typeof isOk == 'boolean') {
+      return {
+        status: isOk,
+        message,
+      }
+    }
+    throw new Error('invalid configuration: custom system missing required property "isOk"')
+  } catch (error) {
+    log.error('@kth/monitor - custom system check failed', error)
+    return { status: false, message: (error || '').toString() }
   }
-  log.error('@kth/monitor - custom system missing property "isOk"', system)
 }
 
 const sleep = async (delay: number) =>
