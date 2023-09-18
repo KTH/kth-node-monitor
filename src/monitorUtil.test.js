@@ -188,8 +188,12 @@ describe('Monitor', () => {
         await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems).toHaveLength(2)
-        expect(result.subSystems).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'system1' })]))
-        expect(result.subSystems).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'system2' })]))
+        expect(result.subSystems).toEqual(
+          expect.arrayContaining([expect.objectContaining({ key: 'system1', name: 'system1' })])
+        )
+        expect(result.subSystems).toEqual(
+          expect.arrayContaining([expect.objectContaining({ key: 'system2', name: 'system2' })])
+        )
       })
       it('keeps selected fields', async () => {
         let result
@@ -200,6 +204,7 @@ describe('Monitor', () => {
         await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ key: expect.anything() }))
+        expect(result.subSystems[0]).toEqual(expect.objectContaining({ name: result.subSystems[0].key }))
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ result: expect.anything() }))
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ ignored: expect.anything() }))
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ required: expect.anything() }))
@@ -213,6 +218,7 @@ describe('Monitor', () => {
         await monitorRequest(mockJsonReq, mockRes)
 
         expect(result.subSystems[0]).toEqual(expect.objectContaining({ key: expect.anything() }))
+        expect(result.subSystems[0]).toEqual(expect.objectContaining({ name: expect.anything() }))
         expect(result.subSystems[0]).not.toEqual(expect.objectContaining({ delete_me: expect.anything() }))
         expect(result.subSystems[0]).not.toEqual(expect.objectContaining({ ignore_me: expect.anything() }))
       })
@@ -224,7 +230,7 @@ describe('Monitor', () => {
 
         expect(mockRes.json).toHaveBeenCalledWith({
           message: 'OK',
-          subSystems: [{ key: 'system1', result: { status: true }, ignored: false, required: true }],
+          subSystems: [{ key: 'system1', name: 'system1', result: { status: true }, ignored: false, required: true }],
         })
       })
       it('prints unsuccessfull json', async () => {
@@ -235,7 +241,7 @@ describe('Monitor', () => {
 
         expect(mockRes.json).toHaveBeenCalledWith({
           message: 'ERROR',
-          subSystems: [{ key: 'system1', result: { status: false }, ignored: false, required: true }],
+          subSystems: [{ key: 'system1', name: 'system1', result: { status: false }, ignored: false, required: true }],
         })
       })
     })
@@ -249,6 +255,18 @@ describe('Monitor', () => {
 
         expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system1'))
         expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('system2'))
+      })
+      it('gives preference to name over key', async () => {
+        checkSystems.mockResolvedValue([
+          { key: 'system1', name: 'name1', result: { status: true } },
+          { key: 'system2', name: 'name2', result: { status: true } },
+        ])
+        await monitorRequest(mockPlainReq, mockRes)
+
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('name1'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.stringContaining('name1'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.not.stringContaining('system1'))
+        expect(mockRes.send).toHaveBeenCalledWith(expect.not.stringContaining('system2'))
       })
       it('shows successfull system', async () => {
         checkSystems.mockResolvedValue([{ key: 'system1', result: { status: true }, ignored: false, required: true }])

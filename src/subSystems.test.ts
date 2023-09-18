@@ -11,6 +11,7 @@ describe('select systems to include', () => {
     { key: 'redis' },
     { key: 'sqldb' },
     { key: 'local' },
+    { key: 'custom' },
     { key: 'anyName' },
   ] as MonitoredSystem[]
   it('do not select any systems on when probe=liveness', async () => {
@@ -24,9 +25,10 @@ describe('select systems to include', () => {
         expect.objectContaining({ key: 'mongodb' }),
         expect.objectContaining({ key: 'redis' }),
         expect.objectContaining({ key: 'sqldb' }),
+        expect.objectContaining({ key: 'custom' }),
       ])
     )
-    expect(results.length).toBe(3)
+    expect(results.length).toBe(4)
   })
   it('select all systems when probe=full', async () => {
     const results = filterSystems('full', systemList)
@@ -37,6 +39,7 @@ describe('select systems to include', () => {
         expect.objectContaining({ key: 'redis' }),
         expect.objectContaining({ key: 'sqldb' }),
         expect.objectContaining({ key: 'local' }),
+        expect.objectContaining({ key: 'custom' }),
         expect.objectContaining({ key: 'anyName' }),
       ])
     )
@@ -45,6 +48,78 @@ describe('select systems to include', () => {
 })
 
 describe('check systems', () => {
+  describe('custom systems', () => {
+    const successfulSystem: MonitoredSystem = {
+      key: 'custom',
+      name: 'customSystem',
+      customCheck: {
+        isOk: true,
+        message: 'Some custom message',
+      },
+    }
+    const unsuccessfulSystem: MonitoredSystem = {
+      key: 'custom',
+      name: 'unsuccessfulSystem',
+      customCheck: {
+        isOk: false,
+        message: 'Some error from custom subSystem',
+      },
+    }
+    const invalidCustomSystem: MonitoredSystem = {
+      key: 'custom',
+      name: 'invalidCustomSystem',
+      customCheck: {
+        // @ts-ignore
+        isOk: 200,
+      },
+    }
+
+    const customSystemMissingCustomCheck: MonitoredSystem = {
+      key: 'custom',
+      name: 'customSystemMissingCustomCheck',
+    }
+
+    it('creates a successful result when "isOk" is true', async () => {
+      const checkedSystems = await checkSystems([successfulSystem])
+
+      expect(checkedSystems[0].name).toEqual('customSystem')
+      expect(checkedSystems[0].result?.status).toEqual(true)
+      expect(checkedSystems[0].result?.message).toEqual('Some custom message')
+    })
+
+    it('creates an unsuccessful result when "isOk" is false', async () => {
+      const checkedSystems = await checkSystems([unsuccessfulSystem])
+
+      expect(checkedSystems[0].name).toEqual('unsuccessfulSystem')
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toEqual('Some error from custom subSystem')
+    })
+
+    it('creates an unsuccessful result if property customCheck is missing', async () => {
+      const checkedSystems = await checkSystems([customSystemMissingCustomCheck])
+      expect(checkedSystems[0].name).toEqual('customSystemMissingCustomCheck')
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toContain(
+        'invalid configuration: custom system missing required property "customCheck"'
+      )
+    })
+
+    it('creates an unsuccessful result if property customCheck is missing', async () => {
+      const checkedSystems = await checkSystems([invalidCustomSystem])
+      expect(checkedSystems[0].name).toEqual('invalidCustomSystem')
+      expect(checkedSystems[0].result?.status).toEqual(false)
+      expect(checkedSystems[0].result?.message).toContain(
+        'invalid configuration: custom system missing required property "isOk"'
+      )
+    })
+
+    it('logs a warning when a custom system does not contain a boolean property "isOk"', async () => {
+      await checkSystems([invalidCustomSystem])
+
+      expect(log.warn).toHaveBeenCalled()
+    })
+  })
+
   describe('unknown systems', () => {
     const unknownSystem = { key: 'unknownType', unknownField: {} } as unknown as MonitoredSystem
     it('returns no "result" field when a system is unknown', async () => {

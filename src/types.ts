@@ -4,8 +4,15 @@ export interface SystemCheckResult {
   message?: string
 }
 
+export interface CustomCheckParameters {
+  isOk: boolean
+  message?: string
+}
+
 export type MonitoredSystem = {
   key: string
+  name?: string
+  customCheck?: CustomCheckParameters
   required?: boolean
   ignored?: boolean
   db?: any
