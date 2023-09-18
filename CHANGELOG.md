@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0] - 2023-09-18
+
+### Added
+
+- Support for `Custom` systems
+- Support for optional `name` on systems
+
 ## [4.1.0] - 2023-06-14
 
 ### Changed

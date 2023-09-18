@@ -19,7 +19,7 @@ Different level of dependency check will now be performed depending on the "prob
   Checks only the application, no dependencies.
 
 - **readyness**
-  Checks the application, and the system that are exlusive for the application, _redis_, _sqldb_ and _mongodb_
+  Checks the application, and the system that are exlusive for the application, _redis_, _sqldb_, _mongodb_ and _custom_
 
 - **full**
   Checks the application and all dependencies. Calls to other api's are done to their _liveness_ probe, to prevent circullar calls.
@@ -84,6 +84,10 @@ monitorRequest = async (req: Request, res: Response, monitoredSystems: Monitored
 
 A helper method that handles an express request to the monitor endpoint.
 
+### Name
+
+All checks can take an optional `name` parameter, otherwise `key` is used as displayname.
+
 ### System checks
 
 **MongoDb**  
@@ -115,6 +119,19 @@ Checked on _readyness_ probes
   key: 'sqldb',
   db: {
     connect: // async function implementing database connection
+  }
+}
+```
+
+**Custom**  
+Checked on _readyness_ probes
+
+```typescript
+{
+  key: 'custom',
+  customCheck: {
+    isOk: boolean,
+    message: string,  // optional message
   }
 }
 ```
