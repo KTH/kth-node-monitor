@@ -113,13 +113,6 @@ describe('check systems', () => {
       )
     })
 
-    // it('returns no "result" field when a custom system does not contain a boolean property "isOk"', async () => {
-    //   const checkedSystems = await checkSystems([invalidCustomSystem])
-
-    //   expect(checkedSystems[0].name).toEqual('invalidCustomSystem')
-    //   expect(checkedSystems[0].result).toEqual(undefined)
-    // })
-
     it('logs a warning when a custom system does not contain a boolean property "isOk"', async () => {
       await checkSystems([invalidCustomSystem])
 

@@ -140,7 +140,7 @@ const checkCustomSystem = (system: MonitoredSystem): SystemCheckResult | undefin
     }
     const { isOk, message } = system.customCheck
 
-    if (isOk != undefined && typeof isOk == 'boolean') {
+    if (typeof isOk == 'boolean') {
       return {
         status: isOk,
         message,
