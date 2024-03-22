@@ -48,7 +48,7 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   } else if (isSqldbSystem(system)) {
     result.result = await checkSqldbSystem(system)
   } else if (isValidCustomSystem(system)) {
-    result.result = checkCustomSystem(system)
+    result.result = await checkCustomSystem(system)
   } else {
     result.ignored = true
     log.warn('@kth/monitor - Unknown system', system)
@@ -133,20 +133,37 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
   }
 }
 
-const checkCustomSystem = (system: MonitoredSystem): SystemCheckResult | undefined => {
+const checkCustomSystem = async (system: MonitoredSystem): Promise<SystemCheckResult | undefined> => {
   try {
-    if (!system.customCheck) {
-      throw new Error('invalid configuration: custom system missing required property "customCheck"')
+    if (!system.customCheck && !system.customLookup) {
+      throw new Error('invalid configuration: custom system missing required property "customCheck" or "customLookup"')
     }
-    const { isOk, message } = system.customCheck
+    if (system.customCheck) {
+      const { isOk, message } = system.customCheck
 
-    if (typeof isOk == 'boolean') {
-      return {
-        status: isOk,
-        message,
+      if (typeof isOk == 'boolean') {
+        return {
+          status: isOk,
+          message,
+        }
+      } else {
+        throw new Error('invalid configuration: custom system missing required property "isOk"')
       }
     }
-    throw new Error('invalid configuration: custom system missing required property "isOk"')
+
+    if (system.customLookup) {
+      const { lookupFn } = system.customLookup
+
+      if (typeof lookupFn == 'function') {
+        const status = await lookupFn()
+        if (typeof status == 'boolean') {
+          return {
+            status,
+          }
+        }
+      }
+    }
+    throw new Error('invalid configuration')
   } catch (error) {
     log.error('@kth/monitor - custom system check failed', error)
     return { status: false, message: (error || '').toString() }
