@@ -1,7 +1,13 @@
 const log = require('@kth/log')
 log.init()
 
-import type { MonitoredSystem, ProbeType, SystemCheckResult } from './types'
+import type {
+  MonitoredSystem,
+  ProbeType,
+  SystemCheckResult,
+  CustomCheckParameters,
+  CustomLookupParameters,
+} from './types'
 
 const SYSTEM_CHECK_TIMEOUT = 5000
 
@@ -139,34 +145,42 @@ const checkCustomSystem = async (system: MonitoredSystem): Promise<SystemCheckRe
       throw new Error('invalid configuration: custom system missing required property "customCheck" or "customLookup"')
     }
     if (system.customCheck) {
-      const { isOk, message } = system.customCheck
-
-      if (typeof isOk == 'boolean') {
-        return {
-          status: isOk,
-          message,
-        }
-      } else {
-        throw new Error('invalid configuration: custom system missing required property "isOk"')
-      }
+      return await doCustomCheck(system.customCheck)
     }
 
     if (system.customLookup) {
-      const { lookupFn } = system.customLookup
-
-      if (typeof lookupFn == 'function') {
-        const status = await lookupFn()
-        if (typeof status == 'boolean') {
-          return {
-            status,
-          }
-        }
-      }
+      const result = await doCustomLookup(system.customLookup)
+      if (result) return result
     }
     throw new Error('invalid configuration')
   } catch (error) {
     log.error('@kth/monitor - custom system check failed', error)
     return { status: false, message: (error || '').toString() }
+  }
+}
+
+const doCustomCheck = async (customCheck: CustomCheckParameters): Promise<SystemCheckResult | undefined> => {
+  const { isOk, message } = customCheck
+
+  if (typeof isOk == 'boolean') {
+    return {
+      status: isOk,
+      message,
+    }
+  } else {
+    throw new Error('invalid configuration: custom system missing required property "isOk"')
+  }
+}
+const doCustomLookup = async (customLookup: CustomLookupParameters): Promise<SystemCheckResult | undefined> => {
+  const { lookupFn } = customLookup
+
+  if (typeof lookupFn == 'function') {
+    const status = await lookupFn()
+    if (typeof status == 'boolean') {
+      return {
+        status,
+      }
+    }
   }
 }
 
