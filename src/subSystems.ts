@@ -1,7 +1,13 @@
 const log = require('@kth/log')
 log.init()
 
-import type { MonitoredSystem, ProbeType, SystemCheckResult } from './types'
+import type {
+  MonitoredSystem,
+  ProbeType,
+  SystemCheckResult,
+  CustomCheckParameters,
+  CustomLookupParameters,
+} from './types'
 
 const SYSTEM_CHECK_TIMEOUT = 5000
 
@@ -48,7 +54,7 @@ const checkSystem = async (system: MonitoredSystem): Promise<MonitoredSystem> =>
   } else if (isSqldbSystem(system)) {
     result.result = await checkSqldbSystem(system)
   } else if (isValidCustomSystem(system)) {
-    result.result = checkCustomSystem(system)
+    result.result = await checkCustomSystem(system)
   } else {
     result.ignored = true
     log.warn('@kth/monitor - Unknown system', system)
@@ -133,23 +139,48 @@ const checkSqldbSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
   }
 }
 
-const checkCustomSystem = (system: MonitoredSystem): SystemCheckResult | undefined => {
+const checkCustomSystem = async (system: MonitoredSystem): Promise<SystemCheckResult | undefined> => {
   try {
-    if (!system.customCheck) {
-      throw new Error('invalid configuration: custom system missing required property "customCheck"')
+    if (!system.customCheck && !system.customLookup) {
+      throw new Error('invalid configuration: custom system missing required property "customCheck" or "customLookup"')
     }
-    const { isOk, message } = system.customCheck
+    if (system.customCheck) {
+      return await doCustomCheck(system.customCheck)
+    }
 
-    if (typeof isOk == 'boolean') {
-      return {
-        status: isOk,
-        message,
-      }
+    if (system.customLookup) {
+      const result = await doCustomLookup(system.customLookup)
+      if (result) return result
     }
-    throw new Error('invalid configuration: custom system missing required property "isOk"')
+    throw new Error('invalid configuration')
   } catch (error) {
     log.error('@kth/monitor - custom system check failed', error)
     return { status: false, message: (error || '').toString() }
+  }
+}
+
+const doCustomCheck = async (customCheck: CustomCheckParameters): Promise<SystemCheckResult | undefined> => {
+  const { isOk, message } = customCheck
+
+  if (typeof isOk == 'boolean') {
+    return {
+      status: isOk,
+      message,
+    }
+  } else {
+    throw new Error('invalid configuration: custom system missing required property "isOk"')
+  }
+}
+const doCustomLookup = async (customLookup: CustomLookupParameters): Promise<SystemCheckResult | undefined> => {
+  const { lookupFn } = customLookup
+
+  if (typeof lookupFn == 'function') {
+    const status = await lookupFn()
+    if (typeof status == 'boolean') {
+      return {
+        status,
+      }
+    }
   }
 }
 

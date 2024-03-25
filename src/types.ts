@@ -8,11 +8,15 @@ export interface CustomCheckParameters {
   isOk: boolean
   message?: string
 }
+export interface CustomLookupParameters {
+  lookupFn: () => Promise<boolean>
+}
 
 export type MonitoredSystem = {
   key: string
   name?: string
   customCheck?: CustomCheckParameters
+  customLookup?: CustomLookupParameters
   required?: boolean
   ignored?: boolean
   db?: any
