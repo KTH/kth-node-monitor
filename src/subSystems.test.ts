@@ -50,126 +50,6 @@ describe('select systems to include', () => {
 describe('check systems', () => {
   describe('custom systems', () => {
     const customSystem = { key: 'custom', name: 'customSystem' } as MonitoredSystem
-
-    it('when "customCheck" exists, creates a successful result when "isOk" is true', async () => {
-      const okSystem = {
-        ...customSystem,
-        customCheck: {
-          isOk: true,
-          message: 'Some custom message',
-        },
-      }
-
-      const checkedSystems = await checkSystems([okSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(true)
-      expect(checkedSystems[0].result?.message).toEqual('Some custom message')
-    })
-
-    it('when "customCheck" exists, creates an unsuccessful result when "isOk" is false', async () => {
-      const notOkSystem: MonitoredSystem = {
-        ...customSystem,
-        customCheck: {
-          isOk: false,
-          message: 'Some error from custom subSystem',
-        },
-      }
-      const checkedSystems = await checkSystems([notOkSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toEqual('Some error from custom subSystem')
-    })
-
-    it('when "customCheck" exists, creates an unsuccessful result if property isOk is missing', async () => {
-      const invalidSystem: MonitoredSystem = {
-        ...customSystem,
-        // @ts-ignore   (needed since the required property isOk is missing)
-        customCheck: {},
-      }
-      const checkedSystems = await checkSystems([invalidSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toContain(
-        'invalid configuration: custom system missing required property "isOk"'
-      )
-    })
-
-    it('when "customCheck" exists, creates an unsuccessful result if property isOk is not a boolean', async () => {
-      const invalidSystem: MonitoredSystem = {
-        ...customSystem,
-        // @ts-ignore   (needed since we pass a string where a boolean is expected)
-        customCheck: { isOk: 'notBoolean' },
-      }
-      const checkedSystems = await checkSystems([invalidSystem])
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toContain(
-        'invalid configuration: custom system missing required property "isOk"'
-      )
-    })
-
-    it('when "customLookup" exists, creates a successful result when "lookupFn" resolves to true', async () => {
-      const okSystem = {
-        ...customSystem,
-        customLookup: {
-          lookupFn: async () => true,
-        },
-      }
-
-      const checkedSystems = await checkSystems([okSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(true)
-    })
-    it('when "customLookup" exists, creates a unsuccessful result when "lookupFn" resolves to false', async () => {
-      const notOkSystem = {
-        ...customSystem,
-        customLookup: {
-          lookupFn: async () => false,
-        },
-      }
-
-      const checkedSystems = await checkSystems([notOkSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-    })
-    it('when "customLookup" exists, creates a unsuccessful result when "lookupFn" rejects', async () => {
-      const notOkSystem = {
-        ...customSystem,
-        customLookup: {
-          lookupFn: async () => {
-            throw new Error('The lookup failed')
-          },
-        },
-      }
-
-      const checkedSystems = await checkSystems([notOkSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toEqual('Error: The lookup failed')
-    })
-    it('when "customLookup" exists, creates a unsuccessful result when "lookupFn" resolves to other than boolean', async () => {
-      const notOkSystem = {
-        ...customSystem,
-        customLookup: {
-          lookupFn: async () => {
-            return 'notBoolean'
-          },
-        },
-      }
-
-      // @ts-ignore   (needed since we return a string where a boolean is expected)
-      const checkedSystems = await checkSystems([notOkSystem])
-
-      expect(checkedSystems[0].name).toEqual('customSystem')
-      expect(checkedSystems[0].result?.status).toEqual(false)
-      expect(checkedSystems[0].result?.message).toEqual('Error: invalid configuration')
-    })
     it('when both "customCheck" and "customLookup" is missing, creates a unsuccessful result', async () => {
       const notOkSystem = {
         ...customSystem,
@@ -199,6 +79,128 @@ describe('check systems', () => {
       expect(checkedSystems[0].name).toEqual('customSystem')
       expect(checkedSystems[0].result?.status).toEqual(true)
       expect(okSystem.customLookup.lookupFn).not.toHaveBeenCalled()
+    })
+    describe('when "customCheck" exists', () => {
+      it('creates a successful result when "isOk" is true', async () => {
+        const okSystem = {
+          ...customSystem,
+          customCheck: {
+            isOk: true,
+            message: 'Some custom message',
+          },
+        }
+
+        const checkedSystems = await checkSystems([okSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(true)
+        expect(checkedSystems[0].result?.message).toEqual('Some custom message')
+      })
+
+      it('creates an unsuccessful result when "isOk" is false', async () => {
+        const notOkSystem: MonitoredSystem = {
+          ...customSystem,
+          customCheck: {
+            isOk: false,
+            message: 'Some error from custom subSystem',
+          },
+        }
+        const checkedSystems = await checkSystems([notOkSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+        expect(checkedSystems[0].result?.message).toEqual('Some error from custom subSystem')
+      })
+
+      it('creates an unsuccessful result if property isOk is missing', async () => {
+        const invalidSystem: MonitoredSystem = {
+          ...customSystem,
+          // @ts-ignore   (needed since the required property isOk is missing)
+          customCheck: {},
+        }
+        const checkedSystems = await checkSystems([invalidSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+        expect(checkedSystems[0].result?.message).toContain(
+          'invalid configuration: custom system missing required property "isOk"'
+        )
+      })
+
+      it('creates an unsuccessful result if property isOk is not a boolean', async () => {
+        const invalidSystem: MonitoredSystem = {
+          ...customSystem,
+          // @ts-ignore   (needed since we pass a string where a boolean is expected)
+          customCheck: { isOk: 'notBoolean' },
+        }
+        const checkedSystems = await checkSystems([invalidSystem])
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+        expect(checkedSystems[0].result?.message).toContain(
+          'invalid configuration: custom system missing required property "isOk"'
+        )
+      })
+    })
+    describe('when "customLookup" exist', () => {
+      it('creates a successful result when "lookupFn" resolves to true', async () => {
+        const okSystem = {
+          ...customSystem,
+          customLookup: {
+            lookupFn: async () => true,
+          },
+        }
+
+        const checkedSystems = await checkSystems([okSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(true)
+      })
+      it('creates a unsuccessful result when "lookupFn" resolves to false', async () => {
+        const notOkSystem = {
+          ...customSystem,
+          customLookup: {
+            lookupFn: async () => false,
+          },
+        }
+
+        const checkedSystems = await checkSystems([notOkSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+      })
+      it('creates a unsuccessful result when "lookupFn" rejects', async () => {
+        const notOkSystem = {
+          ...customSystem,
+          customLookup: {
+            lookupFn: async () => {
+              throw new Error('The lookup failed')
+            },
+          },
+        }
+
+        const checkedSystems = await checkSystems([notOkSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+        expect(checkedSystems[0].result?.message).toEqual('Error: The lookup failed')
+      })
+      it('creates a unsuccessful result when "lookupFn" resolves to other than boolean', async () => {
+        const notOkSystem = {
+          ...customSystem,
+          customLookup: {
+            lookupFn: async () => {
+              return 'notBoolean'
+            },
+          },
+        }
+
+        // @ts-ignore   (needed since we return a string where a boolean is expected)
+        const checkedSystems = await checkSystems([notOkSystem])
+
+        expect(checkedSystems[0].name).toEqual('customSystem')
+        expect(checkedSystems[0].result?.status).toEqual(false)
+        expect(checkedSystems[0].result?.message).toEqual('Error: invalid configuration')
+      })
     })
   })
 
