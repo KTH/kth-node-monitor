@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.3.0] - 2024-04-10
+
+### Added
+
+- Extend `Custom` systems with support for async function call
+
 ## [4.2.0] - 2023-09-18
 
 ### Added
