@@ -126,12 +126,25 @@ Checked on _readyness_ probes
 **Custom**  
 Checked on _readyness_ probes
 
+**_With boolean_**
+
 ```typescript
 {
   key: 'custom',
   customCheck: {
     isOk: boolean,
-    message: string,  // optional message
+    message: string, // optional message
+  }
+}
+```
+
+**_With async function_**
+
+```typescript
+{
+  key: 'custom',
+  customCheck: {
+    lookupFn: // async function returning a boolean
   }
 }
 ```
