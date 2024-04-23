@@ -143,7 +143,7 @@ Checked on _readyness_ probes
 ```typescript
 {
   key: 'custom',
-  customCheck: {
+  customLookup: {
     lookupFn: // async function returning a boolean
   }
 }
