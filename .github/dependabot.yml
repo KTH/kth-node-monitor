@@ -5,6 +5,9 @@ updates:
     schedule:
       interval: monthly
       time: '04:00'
+    groups:
+      minors:
+        update-types: 'minor'
     open-pull-requests-limit: 10
     labels:
       - dependencies
