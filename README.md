@@ -1,4 +1,4 @@
-# @kth/monitor ![Continous Integration](https://github.com/KTH/kth-node-monitor/actions/workflows/main.yml/badge.svg)
+# @kth/monitor
 
 Helper utilities for KTH/node-projects
 
