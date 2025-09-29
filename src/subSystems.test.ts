@@ -284,6 +284,13 @@ describe('check systems', () => {
 
       expect(checkedSystems[0].result?.status).toEqual(true)
     })
+    it('creates successful result when "client.ping" responds "PONG"', async () => {
+      redisClient.ping.mockResolvedValue('PONG')
+
+      const checkedSystems = await checkSystems([redisSystem])
+
+      expect(checkedSystems[0].result?.status).toEqual(true)
+    })
     it('creates unsuccessful result when "client.ping" responds false', async () => {
       redisClient.ping.mockResolvedValue(false)
 

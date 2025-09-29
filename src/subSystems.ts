@@ -92,7 +92,7 @@ const checkRedisSystem = async (system: MonitoredSystem): Promise<SystemCheckRes
 
     const pingStatus = await client.ping()
 
-    if (pingStatus === true) {
+    if (pingStatus === true || pingStatus === 'PONG') {
       return { status: true }
     }
     return { status: false }
