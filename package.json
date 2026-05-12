@@ -29,8 +29,8 @@
     "test:coverage": "rm -rf ./coverage && jest --collectCoverage --detectOpenHandles",
     "build": "./build.sh",
     "build:watch": "tsc --watch",
-    "lint": "eslint \"**/src/*.js\" --quiet",
-    "lint-v": "eslint \"**/src/*.js\"",
+    "lint": "eslint --quiet",
+    "lint-v": "eslint",
     "prepare": "husky"
   },
   "devDependencies": {
