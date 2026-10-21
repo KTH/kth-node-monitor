@@ -7,7 +7,8 @@
     "rootDir": "src",
     "esModuleInterop": true,
     "declaration": true,
-    "strict": true
+    "strict": true,
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*", "node_modules/jest-extended/types/**/*.d.ts"],
   "exclude": ["src/**/*.test.ts"]
